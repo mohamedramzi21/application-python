@@ -99,6 +99,10 @@ class InteractiveObject(GameObject):
         self.contents = contents
         self.is_opened = False
 
+    def interact(self, player: 'Player') -> bool:
+        """Interagit avec l'objet (essaye de l'ouvrir)"""
+        return self.open(player)
+
     @abstractmethod
     def can_open(self, player: 'Player') -> bool:
         """Vérifie si le joueur peut ouvrir l'objet"""

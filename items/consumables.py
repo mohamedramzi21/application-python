@@ -1,3 +1,13 @@
+"""
+Objets consommables du jeu
+"""
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from core.game_objects import ConsumableItem
+
+
 class Steps(ConsumableItem):
     """Pas du joueur"""
     def __init__(self, quantity: int = 70):

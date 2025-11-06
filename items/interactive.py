@@ -1,3 +1,20 @@
+"""
+Objets interactifs du jeu
+"""
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import random
+from typing import TYPE_CHECKING
+from core.game_objects import InteractiveObject
+from items.consumables import Gold, Keys, Gems, Dice
+from items.food import Apple, Banana, Cake, Sandwich
+
+if TYPE_CHECKING:
+    from game.player import Player
+
+
 class Chest(InteractiveObject):
     """Coffre contenant des objets"""
 

@@ -1,9 +1,17 @@
 """
 Classes pour les pièces et les portes
 """
-from game_objects import Direction, RoomColor, RoomEffect, GameObject
-from typing import List, Optional, Tuple
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from typing import List, Optional, Tuple, TYPE_CHECKING
 import random
+
+from core.game_objects import Direction, RoomColor, RoomEffect, GameObject
+
+if TYPE_CHECKING:
+    from game.player import Player
 
 
 class Door:

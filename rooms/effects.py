@@ -1,14 +1,19 @@
 """
 Implémentation des effets spéciaux des pièces
 """
-from game_objects import RoomEffect, RoomColor
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from typing import TYPE_CHECKING
 import random
 
+from core.game_objects import RoomEffect, RoomColor
+
 if TYPE_CHECKING:
-    from game import Game
-    from room import Room
-    from player import Player
+    from game.game import Game
+    from rooms.room import Room
+    from game.player import Player
 
 
 class ResourceEffect(RoomEffect):

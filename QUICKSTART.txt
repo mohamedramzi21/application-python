@@ -1,0 +1,66 @@
+🎮 BLUE PRINCE - GUIDE RAPIDE
+================================
+
+📥 LANCEMENT
+------------
+python3 run_game.py
+
+🧪 TESTS
+--------
+python3 test_game.py
+
+🕹️ CONTRÔLES
+------------
+│ Mode          │ Touche  │ Action              │
+│───────────────│─────────│─────────────────────│
+│ Sélection     │ A       │ Pièce gauche        │
+│ Sélection     │ D       │ Pièce droite        │
+│ Sélection     │ ESPACE  │ Valider             │
+│ Sélection     │ R       │ Redraw (coûte 1 dé) │
+│───────────────│─────────│─────────────────────│
+│ Exploration   │ ↑       │ Nord                │
+│ Exploration   │ ↓       │ Sud                 │
+│ Exploration   │ ←       │ Ouest               │
+│ Exploration   │ →       │ Est                 │
+│ Exploration   │ 1-9     │ Interagir objet     │
+│ Exploration   │ I       │ Inventaire          │
+
+📊 INVENTAIRE DÉPART
+--------------------
+👣 Pas: 70
+💎 Gemmes: 2
+💰 Or: 0
+🔑 Clés: 0
+🎲 Dés: 0
+
+🎯 OBJECTIF
+-----------
+Atteindre l'Antechamber avant de manquer de pas!
+
+🏠 PIÈCES
+---------
+🔵 BLEUES   : Vault, Library, Den...
+🟢 VERTES   : Garden, Greenhouse...
+🟣 VIOLETTES: Bedroom, Chapel...
+🟠 ORANGES  : Hallway, Corridor...
+🟡 JAUNES   : Shop, Market...
+🔴 ROUGES   : Trap Room...
+
+✅ STATUT
+---------
+✅ Tous les modules fonctionnent
+✅ 70 pas, 2 gemmes au départ
+✅ 15 images de pièces (PNG)
+✅ 5 images d'objets (PNG)
+✅ Interface graphique noire
+✅ Contrôles A/D + ESPACE
+
+📝 FICHIERS UTILES
+------------------
+• README.md         - Documentation complète
+• STATUS.md         - État détaillé du projet
+• test_game.py      - Tests automatiques
+• run_game.py       - Lancement rapide
+• assets/           - Images et ressources
+
+🚀 C'EST PRÊT!

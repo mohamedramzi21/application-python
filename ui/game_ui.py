@@ -3,22 +3,27 @@ Interface graphique avec Pygame
 """
 import pygame
 import sys
-from game import Game, GameState
-from game_objects import Direction
-from typing import Optional
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Couleurs
+from typing import Optional
+from game.game import Game, GameState
+from core.game_objects import Direction
+
+# Couleurs - Theme sombre
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (128, 128, 128)
 LIGHT_GRAY = (200, 200, 200)
 DARK_GRAY = (50, 50, 50)
-BLUE = (100, 150, 255)
-GREEN = (100, 200, 100)
-RED = (200, 100, 100)
-YELLOW = (255, 220, 100)
-PURPLE = (180, 100, 200)
-ORANGE = (255, 165, 0)
+
+# Couleurs vives pour meilleur contraste sur fond noir
+BLUE = (100, 180, 255)
+GREEN = (100, 255, 150)
+RED = (255, 100, 100)
+YELLOW = (255, 240, 100)
+PURPLE = (200, 120, 255)
+ORANGE = (255, 180, 50)
 
 # Mapping des couleurs de pièces
 ROOM_COLORS = {
@@ -79,8 +84,8 @@ class GameUI:
                 elif self.game.is_game_over():
                     self.handle_game_over_events(event)
 
-            # Affichage
-            self.screen.fill(DARK_GRAY)
+            # Affichage - Fond noir
+            self.screen.fill(BLACK)
 
             if self.game.state == GameState.PLAYING:
                 self.draw_playing_state()
@@ -97,14 +102,14 @@ class GameUI:
     def handle_playing_events(self, event):
         """Gestion des événements pendant le jeu"""
         if event.type == pygame.KEYDOWN:
-            # Déplacement avec ZQSD
-            if event.key == pygame.K_z:  # Nord
+            # Déplacement avec les FLÈCHES
+            if event.key == pygame.K_UP:  # Nord
                 self.game.try_move(Direction.NORTH)
-            elif event.key == pygame.K_s:  # Sud
+            elif event.key == pygame.K_DOWN:  # Sud
                 self.game.try_move(Direction.SOUTH)
-            elif event.key == pygame.K_d:  # Est
+            elif event.key == pygame.K_RIGHT:  # Est
                 self.game.try_move(Direction.EAST)
-            elif event.key == pygame.K_q:  # Ouest
+            elif event.key == pygame.K_LEFT:  # Ouest
                 self.game.try_move(Direction.WEST)
 
             # Interaction avec les objets (touches 1-9)
@@ -119,18 +124,18 @@ class GameUI:
     def handle_room_selection_events(self, event):
         """Gestion des événements lors de la sélection de pièce"""
         if event.type == pygame.KEYDOWN:
-            # Sélection avec flèches gauche/droite
-            if event.key == pygame.K_LEFT:
+            # Sélection avec A (gauche) et D (droite)
+            if event.key == pygame.K_a:  # A = Gauche
                 self.selected_room_index = (self.selected_room_index - 1) % len(self.game.pending_room_selection)
-            elif event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_d:  # D = Droite
                 self.selected_room_index = (self.selected_room_index + 1) % len(self.game.pending_room_selection)
 
-            # Validation avec Entrée
-            elif event.key == pygame.K_RETURN:
+            # Validation avec ESPACE
+            elif event.key == pygame.K_SPACE:
                 if self.game.select_room(self.selected_room_index):
                     self.selected_room_index = 0
 
-            # Retirer avec R (si on a des dés)
+            # Redraw avec R (si on a des dés)
             elif event.key == pygame.K_r:
                 if self.game.reroll_rooms():
                     self.selected_room_index = 0
@@ -229,9 +234,9 @@ class GameUI:
 
         # Instructions
         instructions = [
-            "<- -> : Selectionner",
-            "ENTREE : Valider",
-            f"R : Retirer (Des: {self.game.player.inventory.dice.quantity})"
+            "A / D : Selectionner",
+            "ESPACE : Valider",
+            f"R : Redraw (Des: {self.game.player.inventory.dice.quantity})"
         ]
 
         y = self.screen_height - 120

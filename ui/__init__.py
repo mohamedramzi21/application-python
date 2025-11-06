@@ -1,0 +1,3 @@
+"""
+Package ui - Interface graphique
+"""

@@ -1,12 +1,20 @@
 """
 Catalogue de pièces disponibles pour le jeu
 """
-from room import Room
-from game_objects import Direction, RoomColor
-from room_effects import *
-from items import *
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import random
 from typing import List, Optional
+
+from rooms.room import Room
+from core.game_objects import Direction, RoomColor
+from rooms.effects import *
+from items.consumables import *
+from items.food import *
+from items.interactive import *
+from items.permanent import *
 
 
 class RoomCatalog:
@@ -367,3 +375,25 @@ class RoomCatalog:
     def get_room_count(self) -> int:
         """Retourne le nombre de pièces disponibles"""
         return len(self.available_rooms)
+
+    def get_all_rooms(self) -> List[Room]:
+        """Retourne toutes les pièces disponibles"""
+        return self.available_rooms.copy()
+
+    def get_entrance(self) -> Optional[Room]:
+        """Retourne la pièce Entrance Hall"""
+        for room in self.available_rooms:
+            if room.name == "Entrance Hall":
+                return room
+        
+        # Si pas trouvé, créer une entrance basique
+        entrance = Room(
+            name="Entrance Hall",
+            color=RoomColor.ORANGE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=0,
+            rarity=0,
+            objects=[]
+        )
+        self.available_rooms.append(entrance)
+        return entrance
