@@ -18,11 +18,11 @@ class Direction(Enum):
 class RoomColor(Enum):
     """Énumération des couleurs de pièces"""
     YELLOW = "yellow"  # Magasins
-    GREEN = "green"  # Jardins
+    GREEN = "green"    # Jardins
     PURPLE = "purple"  # Chambres
     ORANGE = "orange"  # Couloirs
-    RED = "red"  # Pièces indésirables
-    BLUE = "blue"  # Pièces communes
+    RED = "red"        # Pièces indésirables
+    BLUE = "blue"      # Pièces communes
 
 
 class GameObject(ABC):

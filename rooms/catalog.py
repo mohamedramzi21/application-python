@@ -1,10 +1,15 @@
 """
 Catalogue de pièces disponibles pour le jeu
 """
-from room import Room
-from game_objects import Direction, RoomColor
-from room_effects import *
-from items import *
+from rooms.room import Room
+from core.game_objects import Direction, RoomColor
+from items.items import Gems, Chest, Gold, Keys, Apple, DigSpot, Banana, Cake, Sandwich, Locker, Dice
+from rooms.effects import (
+    ResourceEffect,
+    ProbabilityModifierEffect,
+    ItemProbabilityEffect,
+    DispersionEffect,
+)
 import random
 from typing import List, Optional
 
@@ -22,49 +27,57 @@ class RoomCatalog:
         # ============ PIÈCES BLEUES (communes) ============
 
         # Vault - Contient beaucoup d'or
-        self.available_rooms.append(Room(
-            name="Vault",
-            color=RoomColor.BLUE,
-            doors=[Direction.SOUTH],
-            gem_cost=3,
-            rarity=3,
-            objects=[Gold(40)]
-        ))
+        self.available_rooms.append(
+            Room(name="Vault",
+                 color=RoomColor.BLUE,
+                 doors=[Direction.SOUTH],
+                 gem_cost=3,
+                 rarity=3,
+                 objects=[Gold(40)]
+            )
+        )
+
 
         # Den - Contient une gemme et parfois un coffre
         den_objects = [Gems(1)]
         if random.random() < 0.4:
             den_objects.append(Chest())
 
-        self.available_rooms.append(Room(
-            name="Den",
-            color=RoomColor.BLUE,
-            doors=[Direction.NORTH, Direction.SOUTH],
-            gem_cost=0,
-            rarity=1,
-            objects=den_objects
-        ))
-
-        # Library - Plusieurs portes
-        self.available_rooms.append(Room(
-            name="Library",
-            color=RoomColor.BLUE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST],
-            gem_cost=0,
-            rarity=1,
-            objects=[Keys(1)]
-        ))
-
-        # Lavatory (plusieurs exemplaires)
-        for i in range(2):
-            self.available_rooms.append(Room(
-                name="Lavatory",
+        self.available_rooms.append(
+            Room(
+                name="Den",
                 color=RoomColor.BLUE,
                 doors=[Direction.NORTH, Direction.SOUTH],
                 gem_cost=0,
-                rarity=0,
-                objects=[Apple()]
-            ))
+                rarity=1,
+                objects=den_objects
+            )
+        )
+
+        # Library - Plusieurs portes
+        self.available_rooms.append(
+            Room(
+                name="Library",
+                color=RoomColor.BLUE,
+                doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST],
+                gem_cost=0,
+                rarity=1,
+                objects=[Keys(1)]
+            )
+        )
+
+        # Lavatory (plusieurs exemplaires)
+        for i in range(2):
+            self.available_rooms.append(
+                Room(
+                    name="Lavatory",
+                    color=RoomColor.BLUE,
+                    doors=[Direction.NORTH, Direction.SOUTH],
+                    gem_cost=0,
+                    rarity=0,
+                    objects=[Apple()]
+                )
+            )
 
         # ============ PIÈCES VERTES (jardins) ============
 
@@ -75,35 +88,39 @@ class RoomCatalog:
         if random.random() < 0.5:
             veranda_objects.append(DigSpot())
 
-        self.available_rooms.append(Room(
-            name="Veranda",
-            color=RoomColor.GREEN,
-            doors=[Direction.SOUTH, Direction.EAST],
-            gem_cost=2,
-            rarity=2,
-            objects=veranda_objects,
-            effect=ProbabilityModifierEffect(
+        self.available_rooms.append(
+            Room(
+                name="Veranda",
+                color=RoomColor.GREEN,
+                doors=[Direction.SOUTH, Direction.EAST],
+                gem_cost=2,
+                rarity=2,
+                objects=veranda_objects,
+                effect=ProbabilityModifierEffect(
                 "Augmente la probabilité de tirer des pièces vertes",
                 RoomColor.GREEN,
                 2.5
-            ),
-            placement_condition=lambda r, c, h, w: c == 0 or c == w - 1  # Bordure
-        ))
+                   ),
+                placement_condition=lambda r, c, h, w: c == 0 or c == w - 1  # Bordure
+            )
+        )
 
         # Greenhouse - Modifie les probabilités
-        self.available_rooms.append(Room(
-            name="Greenhouse",
-            color=RoomColor.GREEN,
-            doors=[Direction.NORTH, Direction.SOUTH],
-            gem_cost=1,
-            rarity=2,
-            objects=[Gems(2), DigSpot()],
-            effect=ItemProbabilityEffect(
+        self.available_rooms.append(
+            Room(
+                name="Greenhouse",
+                color=RoomColor.GREEN,
+                doors=[Direction.NORTH, Direction.SOUTH],
+                gem_cost=1,
+                rarity=2,
+                objects=[Gems(2), DigSpot()],
+                effect=ItemProbabilityEffect(
                 "Augmente la probabilité de trouver des objets",
                 ['gems', 'permanent_items'],
                 2.0
+                )
             )
-        ))
+        )
 
         # Garden
         self.available_rooms.append(Room(

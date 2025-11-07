@@ -1,7 +1,7 @@
 """
 Implémentation des effets spéciaux des pièces
 """
-from game_objects import RoomEffect, RoomColor
+from core.game_objects import RoomEffect, RoomColor
 from typing import TYPE_CHECKING
 import random
 
@@ -121,7 +121,7 @@ class DispersionEffect(RoomEffect):
 
     def apply(self, game: 'Game', room: 'Room') -> None:
         """Disperse des objets dans des pièces aléatoires"""
-        from items import Gold, Gems, Keys, Dice
+        from items.items import Gold, Gems, Keys, Dice
 
         # Récupérer les pièces éligibles
         eligible_rooms = []

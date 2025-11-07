@@ -1,8 +1,14 @@
 """
 Fichier principal pour lancer le jeu Blue Prince
 """
-from game import Game
-from game_ui import GameUI
+import sys
+import os
+
+# Ajouter le dossier parent au path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from game.game import Game
+from ui.game_ui import GameUI
 
 
 def main():

@@ -1,7 +1,7 @@
 """
 Classes pour les pièces et les portes
 """
-from game_objects import Direction, RoomColor, RoomEffect, GameObject
+from core.game_objects import  Direction, RoomColor, RoomEffect, GameObject
 from typing import List, Optional, Tuple
 import random
 
