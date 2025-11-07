@@ -33,7 +33,7 @@ class Game:
         self.player = Player()
         self.manor = Manor(width=5, height=10)
         self.catalog = RoomCatalog()
-        self.state = GameState.ROOM_SELECTION
+        self.state = GameState.PLAYING  # Commencer en mode PLAYING pour choisir direction
 
         # Pièces proposées pour le choix
         self.pending_room_selection: List = []
@@ -58,8 +58,9 @@ class Game:
             self.manor.place_room(antechamber, goal_row, goal_col)
             print(f"🎯 Objectif: Antechamber placée en position ({goal_row}, {goal_col})")
 
-        # Proposer 3 pièces pour commencer
-        self.generate_room_selection()
+        # Message pour inviter à choisir une direction
+        print("\n🧭 Choisissez une direction pour placer votre première pièce:")
+        print("   W = Nord  |  A = Ouest  |  D = Est")
 
     def generate_room_selection(self):
         """Génère 3 pièces aléatoires pour le choix (version simplifiée)"""
@@ -182,8 +183,11 @@ class Game:
         # Vérifier s'il y a une pièce à destination
         dest_room = self.manor.get_room(*new_pos)
         if not dest_room:
-            print(f"❌ Aucune pièce au {direction.value}. Placez d'abord une pièce ou allez dans une autre direction.")
-            return False
+            # Pas de pièce dans cette direction - proposer d'en placer une
+            print(f"🧭 Direction {direction.value} sélectionnée!")
+            self.selected_direction = direction
+            self.generate_room_selection()
+            return True
 
         # SI la pièce de destination existe, permettre le mouvement (retour en arrière libre)
         # Sinon, vérifier les portes normalement
