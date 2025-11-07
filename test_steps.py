@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from game.game import Game
+from game1.game import Game
 from core.game_objects import Direction
 
 # Créer le jeu
@@ -36,7 +36,7 @@ if north_pos:
     
     # Passer en mode PLAYING
     game.state = game.GameState.PLAYING if hasattr(game, 'GameState') else game.state
-    from game.game import GameState
+    from game1.game import GameState
     game.state = GameState.PLAYING
     
     print(f"\n📍 Avant le mouvement:")

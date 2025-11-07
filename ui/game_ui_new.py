@@ -71,6 +71,7 @@ class ImprovedGameUI:
         # Cache d'images
         self.room_images: Dict[str, pygame.Surface] = {}
         self.item_images: Dict[str, pygame.Surface] = {}
+        self.color_to_image: Dict[str, pygame.Surface] = {}  # Mapping couleur -> image
         self._load_images()
 
         # FPS
@@ -86,13 +87,27 @@ class ImprovedGameUI:
         if os.path.exists(rooms_path):
             for filename in os.listdir(rooms_path):
                 if filename.endswith('.png'):
-                    # Extraire le nom sans _Icon.png
-                    name = filename.replace('_Icon.png', '').replace('_', ' ')
+                    # Extraire le nom de base de la pièce
+                    # "Entrance_Hall_Icon_blue.png" -> "Entrance Hall"
+                    name = filename.replace('_Icon_blue.png', '').replace('_Icon_green.png', '').replace('_Icon_red.png', '').replace('_Icon_yellow.png', '').replace('_Icon.png', '').replace('_Iconblue.png', '').replace('_', ' ')
                     filepath = os.path.join(rooms_path, filename)
                     try:
                         image = pygame.image.load(filepath)
+                        # Sauvegarder avec le nom de la pièce (avec espaces)
                         self.room_images[name] = image
-                        print(f"✓ Image chargée: {name}")
+                        
+                        # Créer mapping couleur -> image (prendre la première de chaque couleur)
+                        if 'blue' in filename.lower() and 'blue' not in self.color_to_image:
+                            self.color_to_image['blue'] = image
+                        elif 'green' in filename.lower() and 'green' not in self.color_to_image:
+                            self.color_to_image['green'] = image
+                        elif 'red' in filename.lower() and 'red' not in self.color_to_image:
+                            self.color_to_image['red'] = image
+                        elif 'yellow' in filename.lower() and 'yellow' not in self.color_to_image:
+                            self.color_to_image['yellow'] = image
+                            self.color_to_image['orange'] = image  # Orange utilise yellow
+                        
+                        print(f"✓ Image chargée: {filename} -> '{name}'")
                     except Exception as e:
                         print(f"✗ Erreur chargement {filename}: {e}")
 
@@ -272,13 +287,24 @@ class ImprovedGameUI:
         for i, room in enumerate(self.game.pending_room_selection):
             x = start_x + i * (room_size + spacing)
 
-            # Image de la pièce
+            # Chercher l'image: 1) nom exact, 2) mapping par couleur, 3) n'importe quelle image
+            img = None
             if room.name in self.room_images:
+                # Nom exact trouvé
                 img = self.room_images[room.name]
+            elif hasattr(self, 'color_to_image') and room.color.value in self.color_to_image:
+                # Utiliser le mapping couleur
+                img = self.color_to_image[room.color.value]
+            elif len(self.room_images) > 0:
+                # Prendre la première image disponible
+                img = list(self.room_images.values())[i % len(self.room_images)]
+            
+            if img:
+                # Afficher l'image
                 img_scaled = pygame.transform.scale(img, (room_size, room_size))
                 self.screen.blit(img_scaled, (x, y_offset))
             else:
-                # Fallback: rectangle coloré
+                # Fallback final: rectangle coloré
                 color = ROOM_COLORS.get(room.color.value, GRAY)
                 pygame.draw.rect(self.screen, color, (x, y_offset, room_size, room_size))
 
@@ -317,13 +343,24 @@ class ImprovedGameUI:
                 room = self.game.manor.get_room(row, col)
 
                 if room:
-                    # Afficher l'image de la pièce
+                    # Chercher l'image: 1) nom exact, 2) mapping par couleur, 3) n'importe quelle image
+                    img = None
                     if room.name in self.room_images:
+                        # Nom exact trouvé
                         img = self.room_images[room.name]
+                    elif hasattr(self, 'color_to_image') and room.color.value in self.color_to_image:
+                        # Utiliser le mapping couleur
+                        img = self.color_to_image[room.color.value]
+                    elif len(self.room_images) > 0:
+                        # Prendre une image au hasard
+                        img = list(self.room_images.values())[0]
+                    
+                    if img:
+                        # Afficher l'image
                         img_scaled = pygame.transform.scale(img, (self.cell_size, self.cell_size))
                         self.screen.blit(img_scaled, (x, y))
                     else:
-                        # Fallback: couleur
+                        # Fallback final: couleur
                         color = ROOM_COLORS.get(room.color.value, GRAY)
                         pygame.draw.rect(self.screen, color, (x, y, self.cell_size, self.cell_size))
 

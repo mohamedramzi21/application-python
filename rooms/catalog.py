@@ -173,6 +173,16 @@ class RoomCatalog:
             )
         ))
 
+        # Antechamber - Point d'arrivée du jeu
+        self.available_rooms.append(Room(
+            name="Antechamber",
+            color=RoomColor.BLUE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=0,
+            rarity=0,
+            objects=[]
+        ))
+
         # ============ PIÈCES ORANGES (couloirs) ============
 
         # Hallway (plusieurs exemplaires)
@@ -397,3 +407,9 @@ class RoomCatalog:
         )
         self.available_rooms.append(entrance)
         return entrance
+    def get_room_by_name(self, room_name: str) -> Optional[Room]:
+        """Retourne une pièce par son nom"""
+        for room in self.available_rooms:
+            if room.name == room_name:
+                return room
+        return None

@@ -12,7 +12,7 @@ from core.game_objects import Direction
 class Manor:
     """Grille du manoir où les pièces sont placées"""
 
-    def __init__(self, width: int = 5, height: int = 5):
+    def __init__(self, width: int = 5, height: int = 10):
         self.width = width
         self.height = height
         # Grille de pièces (None = case vide)

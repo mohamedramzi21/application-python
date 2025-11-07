@@ -11,9 +11,9 @@ import random
 from core.game_objects import RoomEffect, RoomColor
 
 if TYPE_CHECKING:
-    from game.game import Game
+    from game1.game import Game
     from rooms.room import Room
-    from game.player import Player
+    from game1.player import Player
 
 
 class ResourceEffect(RoomEffect):

@@ -12,7 +12,7 @@ from items.consumables import Gold, Keys, Gems, Dice
 from items.food import Apple, Banana, Cake, Sandwich
 
 if TYPE_CHECKING:
-    from game.player import Player
+    from game1.player import Player
 
 
 class Chest(InteractiveObject):

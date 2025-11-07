@@ -31,7 +31,7 @@ class Game:
 
     def __init__(self):
         self.player = Player()
-        self.manor = Manor(width=5, height=5)
+        self.manor = Manor(width=5, height=10)
         self.catalog = RoomCatalog()
         self.state = GameState.ROOM_SELECTION
 
@@ -41,14 +41,22 @@ class Game:
         # Direction sélectionnée pour placer la nouvelle pièce
         self.selected_direction: Optional[Direction] = None
 
-        # Démarrer par l'Entrance Hall au centre
+        # Démarrer par l'Entrance Hall en dernière ligne, colonne 3
         entrance = self.catalog.get_entrance()
         if entrance:
-            center_row = self.manor.height // 2
-            center_col = self.manor.width // 2
-            self.manor.place_room(entrance, center_row, center_col)
-            self.player.position = (center_row, center_col)
+            entrance_row = self.manor.height - 1  # Dernière ligne (4 pour un grid 5x5)
+            entrance_col = 2  # Colonne 3 (index 2)
+            self.manor.place_room(entrance, entrance_row, entrance_col)
+            self.player.position = (entrance_row, entrance_col)
             print(f"🏰 Jeu démarré à l'Entrance Hall en position {self.player.position}")
+
+        # Placer l'Antechamber comme point d'arrivée en ligne 2, colonne 3
+        antechamber = self.catalog.get_room_by_name("Antechamber")
+        if antechamber:
+            goal_row = 0  # Ligne 2 (index 1)
+            goal_col = 2  # Colonne 3 (index 2)
+            self.manor.place_room(antechamber, goal_row, goal_col)
+            print(f"🎯 Objectif: Antechamber placée en position ({goal_row}, {goal_col})")
 
         # Proposer 3 pièces pour commencer
         self.generate_room_selection()
@@ -165,17 +173,6 @@ class Game:
             print("❌ Pas de pièce actuelle!")
             return False
 
-        # Vérifier si la pièce a une porte dans cette direction
-        if not current_room.has_door(direction):
-            print(f"❌ Pas de porte au {direction.value}!")
-            return False
-
-        # Vérifier si la porte peut être ouverte
-        door = current_room.get_door(direction)
-        if door and not door.can_open(self.player):
-            print(f"🔒 La porte est verrouillée (niveau {door.lock_level})!")
-            return False
-
         # Calculer la nouvelle position
         new_pos = self.manor.get_adjacent_position(current_pos, direction)
         if not new_pos:
@@ -185,16 +182,35 @@ class Game:
         # Vérifier s'il y a une pièce à destination
         dest_room = self.manor.get_room(*new_pos)
         if not dest_room:
-            print("❌ Aucune pièce dans cette direction! Choisissez une nouvelle pièce.")
-            self.generate_room_selection()
+            print(f"❌ Aucune pièce au {direction.value}. Placez d'abord une pièce ou allez dans une autre direction.")
             return False
 
-        # Ouvrir la porte si nécessaire
-        if door and not door.is_opened:
+        # SI la pièce de destination existe, permettre le mouvement (retour en arrière libre)
+        # Sinon, vérifier les portes normalement
+        has_door = current_room.has_door(direction)
+        door = current_room.get_door(direction) if has_door else None
+        
+        # Si pas de porte mais pièce existe, c'est un retour en arrière - autoriser
+        if not has_door:
+            print(f"⚠️ Pas de porte au {direction.value}, mais déplacement autorisé vers pièce existante")
+        elif door and not door.can_open(self.player):
+            # Porte existe mais verrouillée
+            print(f"🔒 La porte est verrouillée (niveau {door.lock_level})!")
+            return False
+        elif door and not door.is_opened:
+            # Ouvrir la porte pour la première fois
             if not door.open(self.player):
                 return False
+            print(f"🚪 Porte ouverte vers {direction.value}")
+        elif has_door:
+            print(f"🚪 Passage par la porte déjà ouverte au {direction.value}")
 
-        # Déplacer le joueur SANS dépenser de pas (les pas sont dépensés au placement de pièce)
+        # Déplacement avec consommation de 1 pas
+        if not self.player.inventory.use_steps(1):
+            print("❌ Plus de pas disponibles!")
+            self.state = GameState.GAME_OVER
+            return False
+            
         self.player.position = new_pos
         print(f"✓ Déplacement vers {dest_room.name} (pas restants: {self.player.inventory.steps.quantity})")
         
