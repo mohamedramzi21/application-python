@@ -11,7 +11,7 @@ import random
 from core.game_objects import Direction, RoomColor, RoomEffect, GameObject
 
 if TYPE_CHECKING:
-    from game.player import Player
+    from game1.player import Player
 
 
 class Door:

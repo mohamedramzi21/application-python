@@ -8,7 +8,7 @@ import os
 # Ajouter le répertoire parent au path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from game.game import Game
+from game1.game import Game
 from ui.game_ui import GameUI
 
 

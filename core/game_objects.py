@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from typing import Optional, List
 from enum import Enum
 
-
+#dfghj
 class Direction(Enum):
     """Énumération des directions possibles"""
     NORTH = "north"

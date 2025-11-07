@@ -7,7 +7,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from typing import Optional, Dict
-from game.game import Game, GameState
+from game1.game import Game, GameState
 from core.game_objects import Direction
 
 # Couleurs

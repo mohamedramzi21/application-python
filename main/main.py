@@ -5,7 +5,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from game.game import Game
+from game1.game import Game
 from ui.game_ui import GameUI
 
 

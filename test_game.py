@@ -44,10 +44,10 @@ except Exception as e:
 # Test 4: Import game
 print("\n[4/8] Test imports game...")
 try:
-    from game.inventory import Inventory
-    from game.player import Player
-    from game.manor import Manor
-    from game.game import Game, GameState
+    from game1.inventory import Inventory
+    from game1.player import Player
+    from game1.manor import Manor
+    from game1.game import Game, GameState
     print("✅ game OK")
 except Exception as e:
     print(f"❌ Erreur: {e}")
