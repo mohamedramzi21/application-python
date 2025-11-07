@@ -25,14 +25,13 @@ def main():
 
         print("\n📋 CONTRÔLES:")
         print("  SÉLECTION DE PIÈCE:")
-        print("    ← → : Naviguer entre les pièces")
+        print("    1, 2, 3 : Choisir une pièce")
         print("    ESPACE : Valider le choix")
         print("    R : Redraw (avec dé)")
         print("\n  EN JEU:")
-        print("    W : Se déplacer/ouvrir porte NORD")
-        print("    S : Se déplacer/ouvrir porte SUD")
-        print("    A : Se déplacer/ouvrir porte OUEST")
-        print("    D : Se déplacer/ouvrir porte EST")
+        print("    W/A/S/D : Choisir une direction")
+        print("    ESPACE : Ouvrir une nouvelle porte dans la direction choisie")
+        print("    ↑↓←→ (Flèches) : Se déplacer entre les pièces existantes")
         print("    I : Inventaire")
         print("\nLe jeu est prêt! 🎮\n")
 

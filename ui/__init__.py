@@ -1,3 +1,0 @@
-"""
-Package ui - Interface graphique
-"""

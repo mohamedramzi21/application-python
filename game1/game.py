@@ -183,11 +183,9 @@ class Game:
         # Vérifier s'il y a une pièce à destination
         dest_room = self.manor.get_room(*new_pos)
         if not dest_room:
-            # Pas de pièce dans cette direction - proposer d'en placer une
-            print(f"🧭 Direction {direction.value} sélectionnée!")
-            self.selected_direction = direction
-            self.generate_room_selection()
-            return True
+            # Pas de pièce dans cette direction - ne rien faire
+            print(f"❌ Aucune pièce au {direction.value}. Utilisez W/A/S/D + ESPACE pour ouvrir une nouvelle porte.")
+            return False
 
         # SI la pièce de destination existe, permettre le mouvement (retour en arrière libre)
         # Sinon, vérifier les portes normalement
