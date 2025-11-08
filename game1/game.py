@@ -64,23 +64,47 @@ class Game:
 
     def generate_room_selection(self):
         """Génère 3 pièces aléatoires pour le choix (version simplifiée)"""
+        # Obtenir la direction opposée
+        opposite_direction = None
+        if self.selected_direction:
+            opposite_map = {
+                Direction.NORTH: Direction.SOUTH,
+                Direction.SOUTH: Direction.NORTH,
+                Direction.EAST: Direction.WEST,
+                Direction.WEST: Direction.EAST
+            }
+            opposite_direction = opposite_map.get(self.selected_direction)
+            print(f"🔄 Direction choisie: {self.selected_direction.value} → Les chambres doivent avoir une porte {opposite_direction.value}")
+        
         # Pour les tests: toujours proposer les mêmes pièces
         all_rooms = self.catalog.get_all_rooms()
         
         # Filtrer l'entrance et l'antechamber
         available_rooms = [r for r in all_rooms if r.name not in ["Entrance Hall", "Antechamber"]]
         
-        # Choisir 3 pièces aléatoires
-        if len(available_rooms) >= 3:
-            self.pending_room_selection = random.sample(available_rooms, 3)
+        # Filtrer les chambres qui ont une porte dans la direction OPPOSÉE
+        if opposite_direction:
+            compatible_rooms = [r for r in available_rooms if opposite_direction in r.doors_directions]
+            
+            if len(compatible_rooms) < 3:
+                print(f"⚠️ Seulement {len(compatible_rooms)} chambres compatibles avec porte {opposite_direction.value}")
+                # Si pas assez de chambres compatibles, utiliser toutes les chambres disponibles
+                compatible_rooms = available_rooms
         else:
-            self.pending_room_selection = available_rooms[:3]
+            compatible_rooms = available_rooms
+        
+        # Choisir 3 pièces aléatoires
+        if len(compatible_rooms) >= 3:
+            self.pending_room_selection = random.sample(compatible_rooms, 3)
+        else:
+            self.pending_room_selection = compatible_rooms[:3]
         
         self.state = GameState.ROOM_SELECTION
         print(f"\n🎲 3 nouvelles pièces proposées:")
         for i, room in enumerate(self.pending_room_selection):
             cost = f"💎 {room.gem_cost}" if room.gem_cost > 0 else "Gratuit"
-            print(f"  {i+1}. {room.name} ({cost}) - {len(room.doors_directions)} portes")
+            doors_str = ', '.join([d.value for d in room.doors_directions])
+            print(f"  {i+1}. {room.name} ({cost}) - Portes: {doors_str}")
 
     def select_room(self, index: int) -> bool:
         """Sélectionne une pièce parmi les choix"""
@@ -187,24 +211,24 @@ class Game:
             print(f"❌ Aucune pièce au {direction.value}. Utilisez W/A/S/D + ESPACE pour ouvrir une nouvelle porte.")
             return False
 
-        # SI la pièce de destination existe, permettre le mouvement (retour en arrière libre)
-        # Sinon, vérifier les portes normalement
-        has_door = current_room.has_door(direction)
-        door = current_room.get_door(direction) if has_door else None
+        # Vérifier si la chambre actuelle a une porte dans cette direction
+        if not current_room.has_door(direction):
+            print(f"❌ Pas de porte au {direction.value} dans {current_room.name}")
+            return False
+
+        door = current_room.get_door(direction)
         
-        # Si pas de porte mais pièce existe, c'est un retour en arrière - autoriser
-        if not has_door:
-            print(f"⚠️ Pas de porte au {direction.value}, mais déplacement autorisé vers pièce existante")
-        elif door and not door.can_open(self.player):
-            # Porte existe mais verrouillée
+        # Vérifier si la porte est verrouillée
+        if door and not door.can_open(self.player):
             print(f"🔒 La porte est verrouillée (niveau {door.lock_level})!")
             return False
-        elif door and not door.is_opened:
-            # Ouvrir la porte pour la première fois
+        
+        # Ouvrir la porte si elle n'est pas encore ouverte
+        if door and not door.is_opened:
             if not door.open(self.player):
                 return False
             print(f"🚪 Porte ouverte vers {direction.value}")
-        elif has_door:
+        else:
             print(f"🚪 Passage par la porte déjà ouverte au {direction.value}")
 
         # Déplacement avec consommation de 1 pas

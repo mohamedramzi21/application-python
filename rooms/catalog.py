@@ -25,143 +25,141 @@ class RoomCatalog:
         self._initialize_rooms()
 
     def _initialize_rooms(self):
-        """Initialise le catalogue avec toutes les pièces du jeu"""
+        """Initialise le catalogue avec toutes les pièces du jeu - Correspondant aux images"""
 
-        # ============ PIÈCES BLEUES (communes) ============
+        # ============ PIÈCES AVEC IMAGES ============
 
-        # Vault - Contient beaucoup d'or
-        self.available_rooms.append(Room(
-            name="Vault",
-            color=RoomColor.BLUE,
-            doors=[Direction.SOUTH],
-            gem_cost=3,
-            rarity=3,
-            objects=[Gold(40)]
-        ))
-
-        # Den - Contient une gemme et parfois un coffre
-        den_objects = [Gems(1)]
-        if random.random() < 0.4:
-            den_objects.append(Chest())
-
-        self.available_rooms.append(Room(
-            name="Den",
-            color=RoomColor.BLUE,
-            doors=[Direction.NORTH, Direction.SOUTH],
-            gem_cost=0,
-            rarity=1,
-            objects=den_objects
-        ))
-
-        # Library - Plusieurs portes
+        # 1. Library (blue)
         self.available_rooms.append(Room(
             name="Library",
             color=RoomColor.BLUE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST],
+            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
             gem_cost=0,
             rarity=1,
             objects=[Keys(1)]
         ))
 
-        # Lavatory (plusieurs exemplaires)
-        for i in range(2):
-            self.available_rooms.append(Room(
-                name="Lavatory",
-                color=RoomColor.BLUE,
-                doors=[Direction.NORTH, Direction.SOUTH],
-                gem_cost=0,
-                rarity=0,
-                objects=[Apple()]
-            ))
+        # 2. Dining Room (blue)
+        self.available_rooms.append(Room(
+            name="Dining Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST,Direction.EAST, Direction.SOUTH],  # À MODIFIER
+            gem_cost=0,
+            rarity=1,
+            objects=[Apple()]
+        ))
+
+        # 3. Mail Room (blue)
+        self.available_rooms.append(Room(
+            name="Mail Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],  # À MODIFIER
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 4. Music Room (blue)
+        self.available_rooms.append(Room(
+            name="Music Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 5. Garage (blue)
+        self.available_rooms.append(Room(
+            name="Garage",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            gem_cost=1,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 6. Courtyard (blue)
+        self.available_rooms.append(Room(
+            name="Courtyard",
+            color=RoomColor.BLUE,
+            doors=[ Direction.SOUTH, Direction.EAST, Direction.WEST],  # À MODIFIER
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 7. Observatory (blue)
+        self.available_rooms.append(Room(
+            name="Observatory",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            gem_cost=1,
+            rarity=2,
+            objects=[Gems(1)]
+        ))
+
+        # 8. Rumpus Room (blue)
+        self.available_rooms.append(Room(
+            name="Rumpus Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.NORTH, Direction.SOUTH],  # À MODIFIER
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 9. Security (blue)
+        self.available_rooms.append(Room(
+            name="Security",
+            color=RoomColor.BLUE,
+            doors=[Direction.EAST, Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            gem_cost=1,
+            rarity=1,
+            objects=[Keys(1)]
+        ))
 
         # ============ PIÈCES VERTES (jardins) ============
 
-        # Veranda - Augmente la probabilité de pièces vertes
-        veranda_objects = []
-        if random.random() < 0.6:
-            veranda_objects.append(Gems(1))
-        if random.random() < 0.5:
-            veranda_objects.append(DigSpot())
-
+        # 10. Veranda (green)
         self.available_rooms.append(Room(
             name="Veranda",
             color=RoomColor.GREEN,
-            doors=[Direction.SOUTH, Direction.EAST],
+            doors=[Direction.SOUTH, Direction.NORTH],  # À MODIFIER
             gem_cost=2,
             rarity=2,
-            objects=veranda_objects,
-            effect=ProbabilityModifierEffect(
-                "Augmente la probabilité de tirer des pièces vertes",
-                RoomColor.GREEN,
-                2.5
-            ),
-            placement_condition=lambda r, c, h, w: c == 0 or c == w - 1  # Bordure
+            objects=[Gems(1)]
         ))
 
-        # Greenhouse - Modifie les probabilités
-        self.available_rooms.append(Room(
-            name="Greenhouse",
-            color=RoomColor.GREEN,
-            doors=[Direction.NORTH, Direction.SOUTH],
-            gem_cost=1,
-            rarity=2,
-            objects=[Gems(2), DigSpot()],
-            effect=ItemProbabilityEffect(
-                "Augmente la probabilité de trouver des objets",
-                ['gems', 'permanent_items'],
-                2.0
-            )
-        ))
+        # ============ PIÈCES SPÉCIALES ============
 
-        # Garden
+        # 11. The Pool
         self.available_rooms.append(Room(
-            name="Garden",
-            color=RoomColor.GREEN,
-            doors=[Direction.NORTH, Direction.EAST],
-            gem_cost=1,
-            rarity=1,
-            objects=[Gems(1), DigSpot(), Banana()]
-        ))
-
-        # ============ PIÈCES VIOLETTES (chambres) ============
-
-        # Bedroom - Restaure des pas en entrant
-        self.available_rooms.append(Room(
-            name="Bedroom",
-            color=RoomColor.PURPLE,
-            doors=[Direction.NORTH, Direction.SOUTH],
-            gem_cost=1,
-            rarity=1,
-            objects=[Cake()],
-            effect=ResourceEffect(
-                "Restaure 5 pas en entrant",
-                'steps',
-                5,
-                on_enter=True
-            )
-        ))
-
-        # Master Bedroom - Donne des ressources lors du tirage
-        self.available_rooms.append(Room(
-            name="Master Bedroom",
-            color=RoomColor.PURPLE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST],
+            name="The Pool",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],  # À MODIFIER
             gem_cost=2,
             rarity=2,
-            objects=[Sandwich(), Keys(1)],
-            effect=ResourceEffect(
-                "Vous gagnez 1 gemme en tirant cette pièce",
-                'gems',
-                1,
-                on_enter=False
-            )
+            objects=[]
         ))
 
-        # Chapel - Restaure beaucoup de pas
+        # 12. Commissary (yellow)
+        self.available_rooms.append(Room(
+            name="Commissary",
+            color=RoomColor.YELLOW,
+            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            gem_cost=1,
+            rarity=1,
+            objects=[Apple(), Banana()]
+        ))
+
+        # ============ PIÈCES ROUGES ============
+
+        # 13. Chapel (red)
         self.available_rooms.append(Room(
             name="Chapel",
             color=RoomColor.PURPLE,
-            doors=[Direction.SOUTH, Direction.EAST],
+            doors=[Direction.SOUTH, Direction.EAST,Direction.WEST],  # À MODIFIER
             gem_cost=2,
             rarity=2,
             objects=[],
@@ -173,7 +171,7 @@ class RoomCatalog:
             )
         ))
 
-        # Antechamber - Point d'arrivée du jeu
+        # 14. Antechamber (blue) - Point d'arrivée
         self.available_rooms.append(Room(
             name="Antechamber",
             color=RoomColor.BLUE,
@@ -183,123 +181,8 @@ class RoomCatalog:
             objects=[]
         ))
 
-        # ============ PIÈCES ORANGES (couloirs) ============
-
-        # Hallway (plusieurs exemplaires)
-        for i in range(3):
-            self.available_rooms.append(Room(
-                name="Hallway",
-                color=RoomColor.ORANGE,
-                doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
-                gem_cost=0,
-                rarity=0,
-                objects=[]
-            ))
-
-        # Corridor
-        self.available_rooms.append(Room(
-            name="Corridor",
-            color=RoomColor.ORANGE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST],
-            gem_cost=0,
-            rarity=0,
-            objects=[Keys(1)]
-        ))
-
-        # ============ PIÈCES JAUNES (magasins) ============
-
-        # Shop - Permet d'acheter des objets
-        self.available_rooms.append(Room(
-            name="Shop",
-            color=RoomColor.YELLOW,
-            doors=[Direction.NORTH, Direction.SOUTH],
-            gem_cost=1,
-            rarity=2,
-            objects=[Gold(10)]
-        ))
-
-        # Market
-        self.available_rooms.append(Room(
-            name="Market",
-            color=RoomColor.YELLOW,
-            doors=[Direction.NORTH, Direction.EAST],
-            gem_cost=2,
-            rarity=2,
-            objects=[Gold(15)]
-        ))
-
-        # ============ PIÈCES ROUGES (indésirables) ============
-
-        # Furnace - Retire des pas mais modifie les probabilités
-        self.available_rooms.append(Room(
-            name="Furnace",
-            color=RoomColor.RED,
-            doors=[Direction.NORTH],
-            gem_cost=0,
-            rarity=1,
-            objects=[Keys(2)],
-            effect=ResourceEffect(
-                "Vous perdez 10 pas en entrant",
-                'steps',
-                -10,
-                on_enter=True
-            )
-        ))
-
-        # Dead End
-        self.available_rooms.append(Room(
-            name="Dead End",
-            color=RoomColor.RED,
-            doors=[Direction.SOUTH],
-            gem_cost=0,
-            rarity=1,
-            objects=[Gold(5)]
-        ))
-
-        # ============ PIÈCES SPÉCIALES ============
-
-        # Locker Room - Contient des casiers
-        locker_room_objects = [Locker() for _ in range(random.randint(2, 4))]
-        self.available_rooms.append(Room(
-            name="Locker Room",
-            color=RoomColor.BLUE,
-            doors=[Direction.NORTH, Direction.SOUTH],
-            gem_cost=1,
-            rarity=2,
-            objects=locker_room_objects
-        ))
-
-        # Patio - Disperse des gemmes
-        self.available_rooms.append(Room(
-            name="Patio",
-            color=RoomColor.GREEN,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST],
-            gem_cost=2,
-            rarity=2,
-            objects=[],
-            effect=DispersionEffect(
-                "Disperse 3 gemmes dans d'autres pièces",
-                'gems',
-                3,
-                None
-            )
-        ))
-
-        # Office - Disperse des clés dans les pièces bleues
-        self.available_rooms.append(Room(
-            name="Office",
-            color=RoomColor.BLUE,
-            doors=[Direction.NORTH, Direction.SOUTH],
-            gem_cost=1,
-            rarity=2,
-            objects=[Dice(1)],
-            effect=DispersionEffect(
-                "Disperse 2 clés dans les pièces bleues",
-                'keys',
-                2,
-                RoomColor.BLUE
-            )
-        ))
+        # 15. Entrance Hall (blue) - Point de départ
+        # Note: Créé automatiquement par get_entrance() si nécessaire
 
     def draw_rooms(self, count: int, position: tuple, context: dict = None) -> List[Room]:
         """

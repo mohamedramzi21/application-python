@@ -157,7 +157,7 @@ class Room:
 
     def has_door(self, direction: Direction) -> bool:
         """Vérifie si la pièce a une porte dans une direction"""
-        return direction in self.doors
+        return direction in self.doors_directions
 
     def enter(self, player: 'Player') -> None:
         """Appelé quand le joueur entre dans la pièce"""

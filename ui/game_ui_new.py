@@ -161,19 +161,36 @@ class ImprovedGameUI:
     def handle_playing_events(self, event):
         """En mode jeu: AWSD pour choisir direction, Flèches pour se déplacer"""
         if event.type == pygame.KEYDOWN:
-            # AWSD pour CHOISIR la DIRECTION (préparer l'ouverture d'une porte)
+            # Récupérer la chambre actuelle pour vérifier les portes
+            current_room = self.game.manor.get_room(*self.game.player.position)
+            if not current_room:
+                return
+
+            # W/A/S/D pour SÉLECTIONNER UNE DIRECTION (vérifier d'abord s'il y a une porte)
             if event.key == pygame.K_w:  # W = Nord
-                self.selected_direction = Direction.NORTH
-                print("🧭 Direction sélectionnée: NORD")
+                if current_room.has_door(Direction.NORTH):
+                    self.selected_direction = Direction.NORTH
+                    print("🧭 Direction sélectionnée: NORD")
+                else:
+                    print(f"❌ Pas de porte au NORD dans {current_room.name}")
             elif event.key == pygame.K_s:  # S = Sud
-                self.selected_direction = Direction.SOUTH
-                print("🧭 Direction sélectionnée: SUD")
+                if current_room.has_door(Direction.SOUTH):
+                    self.selected_direction = Direction.SOUTH
+                    print("🧭 Direction sélectionnée: SUD")
+                else:
+                    print(f"❌ Pas de porte au SUD dans {current_room.name}")
             elif event.key == pygame.K_d:  # D = Est
-                self.selected_direction = Direction.EAST
-                print("🧭 Direction sélectionnée: EST")
+                if current_room.has_door(Direction.EAST):
+                    self.selected_direction = Direction.EAST
+                    print("🧭 Direction sélectionnée: EST")
+                else:
+                    print(f"❌ Pas de porte à l'EST dans {current_room.name}")
             elif event.key == pygame.K_a:  # A = Ouest
-                self.selected_direction = Direction.WEST
-                print("🧭 Direction sélectionnée: OUEST")
+                if current_room.has_door(Direction.WEST):
+                    self.selected_direction = Direction.WEST
+                    print("🧭 Direction sélectionnée: OUEST")
+                else:
+                    print(f"❌ Pas de porte à l'OUEST dans {current_room.name}")
             
             # ESPACE pour CONFIRMER la direction et proposer des pièces
             elif event.key == pygame.K_SPACE and self.selected_direction:
@@ -192,15 +209,27 @@ class ImprovedGameUI:
                     print(f"⚠️ Il y a déjà une pièce dans cette direction!")
                     self.selected_direction = None
 
-            # FLÈCHES pour SE DÉPLACER entre pièces adjacentes existantes
+            # FLÈCHES pour SE DÉPLACER entre pièces adjacentes existantes (vérifier les portes)
             elif event.key == pygame.K_UP:  # ↑ = Se déplacer Nord
-                self.game.try_move(Direction.NORTH)
+                if current_room.has_door(Direction.NORTH):
+                    self.game.try_move(Direction.NORTH)
+                else:
+                    print(f"❌ Pas de porte au NORD dans {current_room.name}")
             elif event.key == pygame.K_DOWN:  # ↓ = Se déplacer Sud
-                self.game.try_move(Direction.SOUTH)
+                if current_room.has_door(Direction.SOUTH):
+                    self.game.try_move(Direction.SOUTH)
+                else:
+                    print(f"❌ Pas de porte au SUD dans {current_room.name}")
             elif event.key == pygame.K_RIGHT:  # → = Se déplacer Est
-                self.game.try_move(Direction.EAST)
+                if current_room.has_door(Direction.EAST):
+                    self.game.try_move(Direction.EAST)
+                else:
+                    print(f"❌ Pas de porte à l'EST dans {current_room.name}")
             elif event.key == pygame.K_LEFT:  # ← = Se déplacer Ouest
-                self.game.try_move(Direction.WEST)
+                if current_room.has_door(Direction.WEST):
+                    self.game.try_move(Direction.WEST)
+                else:
+                    print(f"❌ Pas de porte à l'OUEST dans {current_room.name}")
 
             # I pour inventaire
             elif event.key == pygame.K_i:
