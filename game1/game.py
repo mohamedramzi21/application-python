@@ -86,21 +86,34 @@ class Game:
         if opposite_direction:
             compatible_rooms = [r for r in available_rooms if opposite_direction in r.doors_directions]
             
-            if len(compatible_rooms) < 3:
-                print(f"⚠️ Seulement {len(compatible_rooms)} chambres compatibles avec porte {opposite_direction.value}")
-                # Si pas assez de chambres compatibles, utiliser toutes les chambres disponibles
+            if len(compatible_rooms) == 0:
+                print(f"⚠️ Aucune chambre compatible avec porte {opposite_direction.value}!")
+                print(f"   Proposition de chambres sans cette restriction...")
                 compatible_rooms = available_rooms
+            elif len(compatible_rooms) < 3:
+                print(f"ℹ️  Seulement {len(compatible_rooms)} chambre(s) compatible(s) avec porte {opposite_direction.value}")
         else:
             compatible_rooms = available_rooms
         
-        # Choisir 3 pièces aléatoires
-        if len(compatible_rooms) >= 3:
-            self.pending_room_selection = random.sample(compatible_rooms, 3)
+        # Choisir jusqu'à 3 pièces (ou moins si pas assez disponibles)
+        num_to_select = min(3, len(compatible_rooms))
+        if num_to_select > 0:
+            self.pending_room_selection = random.sample(compatible_rooms, num_to_select)
         else:
-            self.pending_room_selection = compatible_rooms[:3]
+            self.pending_room_selection = []
+            print("❌ Aucune chambre disponible!")
+            return
         
         self.state = GameState.ROOM_SELECTION
-        print(f"\n🎲 3 nouvelles pièces proposées:")
+        
+        # Message adapté selon le nombre de chambres
+        if len(self.pending_room_selection) == 1:
+            print(f"\n🎲 1 chambre proposée:")
+        elif len(self.pending_room_selection) == 2:
+            print(f"\n🎲 2 chambres proposées:")
+        else:
+            print(f"\n🎲 3 chambres proposées:")
+            
         for i, room in enumerate(self.pending_room_selection):
             cost = f"💎 {room.gem_cost}" if room.gem_cost > 0 else "Gratuit"
             doors_str = ', '.join([d.value for d in room.doors_directions])

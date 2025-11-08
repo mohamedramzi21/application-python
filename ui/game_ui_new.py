@@ -213,21 +213,25 @@ class ImprovedGameUI:
             elif event.key == pygame.K_UP:  # ↑ = Se déplacer Nord
                 if current_room.has_door(Direction.NORTH):
                     self.game.try_move(Direction.NORTH)
+                    self.selected_direction = None  # Réinitialiser la direction après déplacement
                 else:
                     print(f"❌ Pas de porte au NORD dans {current_room.name}")
             elif event.key == pygame.K_DOWN:  # ↓ = Se déplacer Sud
                 if current_room.has_door(Direction.SOUTH):
                     self.game.try_move(Direction.SOUTH)
+                    self.selected_direction = None  # Réinitialiser la direction après déplacement
                 else:
                     print(f"❌ Pas de porte au SUD dans {current_room.name}")
             elif event.key == pygame.K_RIGHT:  # → = Se déplacer Est
                 if current_room.has_door(Direction.EAST):
                     self.game.try_move(Direction.EAST)
+                    self.selected_direction = None  # Réinitialiser la direction après déplacement
                 else:
                     print(f"❌ Pas de porte à l'EST dans {current_room.name}")
             elif event.key == pygame.K_LEFT:  # ← = Se déplacer Ouest
                 if current_room.has_door(Direction.WEST):
                     self.game.try_move(Direction.WEST)
+                    self.selected_direction = None  # Réinitialiser la direction après déplacement
                 else:
                     print(f"❌ Pas de porte à l'OUEST dans {current_room.name}")
 
