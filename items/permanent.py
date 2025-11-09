@@ -6,7 +6,7 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.game_objects import PermanentItem
-
+from items.permanent import PermanentItem
 
 class Shovel(PermanentItem):
     """Pelle pour creuser"""

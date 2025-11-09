@@ -26,6 +26,13 @@ class Inventory:
         # Nourriture
         self.food_items = []
 
+        def spend_gold(self, amount: int) -> bool:
+            if self.gold >= amount:
+                self.gold -= amount
+                return True
+            print("Pas assez d’or !")
+            return False
+
     def add_item(self, item):
         """Ajoute un objet consommable à l'inventaire"""
         if hasattr(item, 'quantity'):

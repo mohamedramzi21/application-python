@@ -20,9 +20,11 @@ class Chest(InteractiveObject):
 
     def __init__(self):
         # Génère un contenu aléatoire pour le coffre
-        contents = self._generate_contents()
+        contents = random.choice([[Gems(1)], [Keys(1)], [Apple()]])
         super().__init__("Coffre", contents)
 
+    def can_open(self, player):
+        return player.inventory.keys > 0 or any(obj.name == "Marteau" for obj in player.inventory.permanent_items)
     def _generate_contents(self) -> list:
         """Génère un contenu aléatoire pour le coffre"""
         possible_contents = [
@@ -61,6 +63,9 @@ class DigSpot(InteractiveObject):
         contents = self._generate_contents()
         super().__init__("Endroit où creuser", contents)
 
+    def can_open(self, player):
+        # vérifie si le joueur possède une pelle
+        return any(obj.name == "Pelle" for obj in player.inventory.permanent_items)
     def _generate_contents(self) -> list:
         """Génère un contenu aléatoire pour le trou"""
         if random.random() < 0.3:  # 30% de chance de ne rien trouver
