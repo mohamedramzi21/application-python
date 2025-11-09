@@ -1,2 +1,0 @@
-def consumables():
-    return None
