@@ -24,6 +24,20 @@ class RoomCatalog:
         self.available_rooms: List[Room] = []
         self._initialize_rooms()
 
+        # Apply a random rotation (0/90/180/270) to each room to increase directional variety.
+        # Skip Entrance Hall and Antechamber to keep them stable.
+        for room in self.available_rooms:
+            if room.name in ["Entrance Hall", "Antechamber"]:
+                continue
+            # Only rotate if the room has doors defined
+            if not getattr(room, 'doors_directions', None):
+                continue
+            deg = random.choice([0, 90, 180, 270])
+            if deg != 0:
+                room.rotate(deg)
+                # Optional: annotate the name with rotation for debugging (kept commented)
+                # room.name = f"{room.name} (rot{deg})"
+
     def _initialize_rooms(self):
         """Initialise le catalogue avec toutes les pièces du jeu - Correspondant aux images"""
 
@@ -210,7 +224,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Coat Check",
             color=RoomColor.BLUE,
-            doors=[Direction.SOUTH, Direction.EAST],
+            doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[Keys(1)]
@@ -230,7 +244,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Drawing Room",
             color=RoomColor.BLUE,
-            doors=[Direction.WEST, Direction.SOUTH],
+            doors=[Direction.WEST, Direction.SOUTH, Direction.EAST],
             gem_cost=1,
             rarity=1,
             objects=[Apple()]
@@ -250,7 +264,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Gallery",
             color=RoomColor.BLUE,
-            doors=[Direction.WEST, Direction.EAST],
+            doors=[Direction.SOUTH,Direction.NORTH],
             gem_cost=1,
             rarity=2,
             objects=[Gems(1)]
@@ -260,7 +274,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Parlor",
             color=RoomColor.BLUE,
-            doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
+            doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[Keys(1)]
@@ -280,7 +294,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Room 8",
             color=RoomColor.BLUE,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH,Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[Keys(1)]
@@ -290,7 +304,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Rotunda",
             color=RoomColor.BLUE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            doors=[Direction.SOUTH,Direction.WEST],
             gem_cost=1,
             rarity=2,
             objects=[Gems(1), Keys(1)]
@@ -300,7 +314,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Spare Room",
             color=RoomColor.BLUE,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH,Direction.NORTH],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -320,7 +334,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="The Foundation",
             color=RoomColor.BLUE,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH,Direction.EAST,Direction.WEST],
             gem_cost=1,
             rarity=2,
             objects=[Gems(1)]
@@ -350,27 +364,18 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Workshop",
             color=RoomColor.BLUE,
-            doors=[Direction.SOUTH, Direction.EAST],
+            doors=[Direction.SOUTH, Direction.NORTH],
             gem_cost=0,
             rarity=1,
             objects=[Keys(1)]
         ))
 
-        # 33. Billiard Room (blue)
-        self.available_rooms.append(Room(
-            name="Billiard Room",
-            color=RoomColor.BLUE,
-            doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
-            gem_cost=1,
-            rarity=1,
-            objects=[Dice(1)]
-        ))
-
+        
         # 34. Boiler Room (blue)
         self.available_rooms.append(Room(
             name="Boiler Room",
             color=RoomColor.BLUE,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH,Direction.WEST,Direction.EAST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -392,7 +397,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Patio",
             color=RoomColor.GREEN,
-            doors=[Direction.SOUTH, Direction.NORTH],
+            doors=[Direction.SOUTH, Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[Gems(1)]
@@ -402,7 +407,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Terrace",
             color=RoomColor.GREEN,
-            doors=[Direction.SOUTH, Direction.WEST],
+            doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[Gems(1), Keys(1)]
@@ -412,7 +417,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Greenhouse",
             color=RoomColor.GREEN,
-            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],
+            doors=[Direction.SOUTH],
             gem_cost=1,
             rarity=2,
             objects=[Gems(2), Apple(), Banana()]
@@ -424,7 +429,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Corridor",
             color=RoomColor.ORANGE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            doors=[Direction.NORTH, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -434,7 +439,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="East Wing Hall",
             color=RoomColor.ORANGE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -444,7 +449,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Foyer",
             color=RoomColor.ORANGE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            doors=[Direction.NORTH, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -454,7 +459,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Hallway",
             color=RoomColor.ORANGE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST],
+            doors=[Direction.WEST, Direction.SOUTH, Direction.EAST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -474,7 +479,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Secret Passage",
             color=RoomColor.ORANGE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            doors=[Direction.NORTH, Direction.SOUTH],# il doit depenser une cle pour pouvoir choir la porte de north
             gem_cost=1,
             rarity=2,
             objects=[Keys(1)]
@@ -484,7 +489,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="West Wing Hall",
             color=RoomColor.ORANGE,
-            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -496,7 +501,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Archives",
             color=RoomColor.RED,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH, Direction.NORTH, Direction.EAST,Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -506,7 +511,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Darkroom",
             color=RoomColor.RED,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH, Direction.EAST,Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -526,7 +531,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Gymnasium",
             color=RoomColor.RED,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH, Direction.EAST,Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -546,7 +551,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Maid Chamber",
             color=RoomColor.RED,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH,Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -556,7 +561,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Weight Room",
             color=RoomColor.RED,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH, Direction.NORTH, Direction.EAST,Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -568,7 +573,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Bedroom",
             color=RoomColor.PURPLE,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH,Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[Cake()]
@@ -578,7 +583,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Boudoir",
             color=RoomColor.PURPLE,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH, Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[Cake()]
@@ -588,7 +593,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Bunk Room",
             color=RoomColor.PURPLE,
-            doors=[Direction.SOUTH, Direction.EAST],
+            doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[Cake()]
@@ -634,9 +639,9 @@ class RoomCatalog:
             objects=[Cake()]
         ))
 
-        # 60. Servant's Quarters (purple)
+        # 60. Servant Quarters (purple)
         self.available_rooms.append(Room(
-            name="Servant's Quarters",
+            name="Servant Quarters",
             color=RoomColor.PURPLE,
             doors=[Direction.SOUTH],
             gem_cost=0,
@@ -660,7 +665,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Kitchen",
             color=RoomColor.YELLOW,
-            doors=[Direction.SOUTH, Direction.EAST],
+            doors=[Direction.SOUTH, Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[Apple(), Banana(), Cake()]
@@ -690,7 +695,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Mount Holly Gift Shop",
             color=RoomColor.YELLOW,
-            doors=[Direction.SOUTH, Direction.WEST],
+            doors=[Direction.SOUTH, Direction.WEST,Direction.EAST],
             gem_cost=1,
             rarity=2,
             objects=[Keys(2), Gems(1), Dice(1)]
@@ -700,7 +705,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="Showroom",
             color=RoomColor.YELLOW,
-            doors=[Direction.SOUTH, Direction.EAST],
+            doors=[Direction.SOUTH, Direction.NORTH],
             gem_cost=1,
             rarity=1,
             objects=[Keys(1), Dice(1)]
@@ -710,7 +715,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="The Armory",
             color=RoomColor.YELLOW,
-            doors=[Direction.SOUTH],
+            doors=[Direction.SOUTH, Direction.EAST,Direction.WEST,Direction.NORTH],#north and south must use a shovel
             gem_cost=2,
             rarity=2,
             objects=[Keys(2), Gems(1)]

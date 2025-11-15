@@ -124,6 +124,9 @@ class Room:
         # Indique si le joueur a déjà visité la pièce
         self.visited = False
 
+        # Rotation appliquée (0, 90, 180, 270). Affecte uniquement la logique des portes.
+        self.rotation_degrees = 0
+
     def initialize_doors(self, row: int, total_rows: int):
         """Initialise les portes avec des niveaux de verrouillage aléatoires"""
         for direction in self.doors_directions:
@@ -233,3 +236,65 @@ class Room:
 
     def __repr__(self):
         return f"Room({self.name}, cost={self.gem_cost}, rarity={self.rarity})"
+
+    def rotate(self, degrees: int) -> None:
+        """Rotate the room's logical door directions clockwise by degrees (must be 0,90,180,270).
+        This mutates self.doors_directions so later initialization reflects the rotation.
+        """
+        if degrees % 90 != 0:
+            raise ValueError("degrees must be a multiple of 90")
+
+        degrees = degrees % 360
+        if degrees == 0:
+            return
+
+        # clockwise rotation mapping
+        order = [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
+        mapping = {}
+        steps = (degrees // 90) % 4
+        for i, d in enumerate(order):
+            mapping[d] = order[(i + steps) % 4]
+
+        # apply mapping to doors_directions
+        rotated = [mapping.get(d, d) for d in self.doors_directions]
+        # deduplicate while preserving order
+        seen = set()
+        new_doors = []
+        for d in rotated:
+            if d not in seen:
+                seen.add(d)
+                new_doors.append(d)
+
+        self.doors_directions = new_doors
+        self.rotation_degrees = degrees
+
+    def rotate(self, degrees: int) -> None:
+        """Rotate the room's logical door directions clockwise by degrees (must be 0,90,180,270).
+        This mutates self.doors_directions so later initialization reflects the rotation.
+        """
+        if degrees % 90 != 0:
+            raise ValueError("degrees must be a multiple of 90")
+
+        degrees = degrees % 360
+        if degrees == 0:
+            return
+
+        # clockwise rotation mapping
+        order = [Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST]
+        mapping = {}
+        steps = (degrees // 90) % 4
+        for i, d in enumerate(order):
+            mapping[d] = order[(i + steps) % 4]
+
+        # apply mapping to doors_directions
+        rotated = [mapping.get(d, d) for d in self.doors_directions]
+        # deduplicate while preserving order
+        seen = set()
+        new_doors = []
+        for d in rotated:
+            if d not in seen:
+                seen.add(d)
+                new_doors.append(d)
+
+        self.doors_directions = new_doors
+        self.rotation_degrees = degrees

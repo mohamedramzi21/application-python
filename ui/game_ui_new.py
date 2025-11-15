@@ -70,9 +70,11 @@ class ImprovedGameUI:
 
         # Cache d'images
         self.room_images: Dict[str, pygame.Surface] = {}
+        self.room_images_original: Dict[str, pygame.Surface] = {}  # Images originales non tournées
         self.item_images: Dict[str, pygame.Surface] = {}
         self.color_to_image: Dict[str, pygame.Surface] = {}  # Mapping couleur -> image
         self._load_images()
+        # Les rotations visuelles seront appliquées à la demande via get_room_image()
 
         # FPS
         self.clock = pygame.time.Clock()
@@ -113,7 +115,9 @@ class ImprovedGameUI:
                     filepath = os.path.join(rooms_path, filename)
                     try:
                         image = pygame.image.load(filepath)
-                        # Sauvegarder avec le nom de la pièce (avec espaces)
+                        # Sauvegarder l'image originale
+                        self.room_images_original[name] = image
+                        # Sauvegarder aussi dans room_images (sera écrasé par rotation si nécessaire)
                         self.room_images[name] = image
                         
                         # Créer mapping couleur -> image (prendre la première de chaque couleur)
@@ -149,6 +153,43 @@ class ImprovedGameUI:
                         print(f"✓ Item chargé: {name}")
                     except Exception as e:
                         print(f"✗ Erreur chargement {filename}: {e}")
+
+    def get_room_image(self, room) -> Optional[pygame.Surface]:
+        """Récupère l'image d'une pièce en appliquant sa rotation si nécessaire"""
+        room_name = room.name
+        
+        # Vérifier si l'image originale existe
+        if room_name not in self.room_images_original:
+            return self.room_images.get(room_name)
+        
+        # Récupérer la rotation de la pièce
+        rotation_deg = getattr(room, 'rotation_degrees', 0)
+        
+        # Si pas de rotation, retourner l'image originale
+        if rotation_deg == 0:
+            return self.room_images_original[room_name]
+        
+        # Créer une clé unique pour cette rotation
+        cache_key = f"{room_name}_rot{rotation_deg}"
+        
+        # Vérifier si l'image tournée est déjà en cache
+        if cache_key in self.room_images:
+            return self.room_images[cache_key]
+        
+        # Sinon, tourner l'image et la mettre en cache
+        original_image = self.room_images_original[room_name]
+        
+        # Pygame rotate tourne dans le sens anti-horaire, donc on inverse
+        # rotation_degrees est clockwise, pygame.transform.rotate est counterclockwise
+        pygame_rotation = -rotation_deg
+        
+        # Appliquer la rotation
+        rotated_image = pygame.transform.rotate(original_image, pygame_rotation)
+        
+        # Mettre en cache
+        self.room_images[cache_key] = rotated_image
+        
+        return rotated_image
 
     def run(self):
         """Boucle principale"""
@@ -350,17 +391,15 @@ class ImprovedGameUI:
         for i, room in enumerate(self.game.pending_room_selection):
             x = start_x + i * (room_size + spacing)
 
-            # Chercher l'image: 1) nom exact, 2) mapping par couleur, 3) n'importe quelle image
-            img = None
-            if room.name in self.room_images:
-                # Nom exact trouvé
-                img = self.room_images[room.name]
-            elif hasattr(self, 'color_to_image') and room.color.value in self.color_to_image:
-                # Utiliser le mapping couleur
-                img = self.color_to_image[room.color.value]
-            elif len(self.room_images) > 0:
-                # Prendre la première image disponible
-                img = list(self.room_images.values())[i % len(self.room_images)]
+            # Récupérer l'image avec rotation appliquée
+            img = self.get_room_image(room)
+            
+            # Fallback sur mapping couleur ou image aléatoire si pas d'image spécifique
+            if img is None:
+                if hasattr(self, 'color_to_image') and room.color.value in self.color_to_image:
+                    img = self.color_to_image[room.color.value]
+                elif len(self.room_images) > 0:
+                    img = list(self.room_images.values())[i % len(self.room_images)]
             
             if img:
                 # Afficher l'image
@@ -406,17 +445,15 @@ class ImprovedGameUI:
                 room = self.game.manor.get_room(row, col)
 
                 if room:
-                    # Chercher l'image: 1) nom exact, 2) mapping par couleur, 3) n'importe quelle image
-                    img = None
-                    if room.name in self.room_images:
-                        # Nom exact trouvé
-                        img = self.room_images[room.name]
-                    elif hasattr(self, 'color_to_image') and room.color.value in self.color_to_image:
-                        # Utiliser le mapping couleur
-                        img = self.color_to_image[room.color.value]
-                    elif len(self.room_images) > 0:
-                        # Prendre une image au hasard
-                        img = list(self.room_images.values())[0]
+                    # Récupérer l'image avec rotation appliquée
+                    img = self.get_room_image(room)
+                    
+                    # Fallback sur mapping couleur ou image aléatoire
+                    if img is None:
+                        if hasattr(self, 'color_to_image') and room.color.value in self.color_to_image:
+                            img = self.color_to_image[room.color.value]
+                        elif len(self.room_images) > 0:
+                            img = list(self.room_images.values())[0]
                     
                     if img:
                         # Afficher l'image
