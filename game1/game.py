@@ -22,6 +22,7 @@ class GameState(Enum):
     """États possibles du jeu"""
     ROOM_SELECTION = "room_selection"  # Choix d'une pièce
     PLAYING = "playing"                 # En jeu normal
+    ROOM_INTERACTION = "room_interaction"  # Interaction avec objets dans la pièce
     GAME_OVER = "game_over"            # Défaite
     GAME_WON = "game_won"              # Victoire
 
@@ -40,6 +41,10 @@ class Game:
         
         # Direction sélectionnée pour placer la nouvelle pièce
         self.selected_direction: Optional[Direction] = None
+        
+        # Variables pour l'interaction avec les objets
+        self.room_objects: List = []  # Objets disponibles dans la pièce actuelle
+        self.selected_object_index: int = 0  # Index de l'objet sélectionné
 
         # Démarrer par l'Entrance Hall en dernière ligne, colonne 3
         entrance = self.catalog.get_entrance()
@@ -158,6 +163,11 @@ class Game:
                 
                 # Passer en mode jeu
                 self.state = GameState.PLAYING
+                
+                # Activer automatiquement le mode interaction si la chambre a des objets
+                if len(selected_room.objects) > 0:
+                    self.enter_room_interaction()
+                
                 return True
             else:
                 print(f"❌ Position {new_pos} occupée ou invalide")
@@ -257,6 +267,11 @@ class Game:
         if dest_room.name == "Antechamber":
             self.state = GameState.GAME_WON
             print("🎉 VICTOIRE! Vous avez atteint l'Antechamber!")
+            return True
+        
+        # Activer automatiquement le mode interaction si la chambre a des objets
+        if len(dest_room.objects) > 0:
+            self.enter_room_interaction()
         
         return True
 
@@ -272,6 +287,71 @@ class Game:
             obj.interact(self.player)
         else:
             print(f"❌ Pas d'objet à l'index {object_index}")
+
+    def enter_room_interaction(self):
+        """Entre en mode interaction avec les objets de la pièce actuelle"""
+        current_room = self.manor.get_room(*self.player.position)
+        if current_room and len(current_room.objects) > 0:
+            self.room_objects = current_room.objects.copy()
+            self.selected_object_index = 0
+            self.state = GameState.ROOM_INTERACTION
+            print(f"🚪 Entrée dans {current_room.name} - {len(self.room_objects)} objets disponibles")
+            return True
+        return False
+    
+    def navigate_objects(self, direction: int):
+        """Navigue dans la liste d'objets (direction: -1 pour haut, +1 pour bas)"""
+        if self.state != GameState.ROOM_INTERACTION or len(self.room_objects) == 0:
+            return
+        
+        self.selected_object_index = (self.selected_object_index + direction) % len(self.room_objects)
+        print(f"📍 Objet sélectionné: {self.room_objects[self.selected_object_index].name}")
+    
+    def take_selected_object(self):
+        """Prend l'objet sélectionné"""
+        if self.state != GameState.ROOM_INTERACTION or len(self.room_objects) == 0:
+            return False
+        
+        if 0 <= self.selected_object_index < len(self.room_objects):
+            obj = self.room_objects[self.selected_object_index]
+            
+            # Ajouter à l'inventaire
+            if obj.name == "Gâteau":
+                self.player.inventory.steps.quantity += 10
+                print(f"🍰 Cake ramassé! +10 pas (Total: {self.player.inventory.steps.quantity})")
+            elif obj.name == "Gemmes":
+                self.player.inventory.gems.quantity += obj.quantity
+                print(f"💎 Gem ramassée! (Total: {self.player.inventory.gems.quantity})")
+            elif obj.name == "Clés":
+                self.player.inventory.keys.quantity += obj.quantity
+                print(f"🔑 Key ramassée! (Total: {self.player.inventory.keys.quantity})")
+            elif obj.name == "Dés":
+                self.player.inventory.dice.quantity += obj.quantity
+                print(f"🎲 Dice ramassé! (Total: {self.player.inventory.dice.quantity})")
+            
+            # Retirer de la liste et de la pièce
+            self.room_objects.pop(self.selected_object_index)
+            current_room = self.manor.get_room(*self.player.position)
+            if current_room:
+                current_room.objects.remove(obj)
+            
+            # Ajuster l'index si nécessaire
+            if self.selected_object_index >= len(self.room_objects) and self.selected_object_index > 0:
+                self.selected_object_index -= 1
+            
+            # Si plus d'objets, sortir du mode interaction
+            if len(self.room_objects) == 0:
+                self.exit_room_interaction()
+            
+            return True
+        return False
+    
+    def exit_room_interaction(self):
+        """Sort du mode interaction"""
+        self.state = GameState.PLAYING
+        self.room_objects = []
+        self.selected_object_index = 0
+        print("🚪 Sortie du mode interaction")
 
     def is_game_over(self) -> bool:
         """Vérifie si le jeu est terminé"""

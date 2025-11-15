@@ -132,6 +132,7 @@ class ImprovedGameUI:
         while running:
             self.clock.tick(self.fps)
 
+            # Gestion des événements
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -140,6 +141,8 @@ class ImprovedGameUI:
                     self.handle_playing_events(event)
                 elif self.game.state == GameState.ROOM_SELECTION:
                     self.handle_room_selection_events(event)
+                elif self.game.state == GameState.ROOM_INTERACTION:
+                    self.handle_room_interaction_events(event)
                 elif self.game.is_game_over():
                     self.handle_game_over_events(event)
 
@@ -150,6 +153,8 @@ class ImprovedGameUI:
                 self.draw_playing_state()
             elif self.game.state == GameState.ROOM_SELECTION:
                 self.draw_room_selection_state()
+            elif self.game.state == GameState.ROOM_INTERACTION:
+                self.draw_room_interaction_state()
             elif self.game.is_game_over():
                 self.draw_game_over_state()
 
@@ -499,6 +504,94 @@ class ImprovedGameUI:
 
         pygame.draw.rect(self.screen, WHITE, rect)
         pygame.draw.rect(self.screen, YELLOW, rect, 2)  # Bordure jaune pour le rendre plus visible
+
+    def handle_room_interaction_events(self, event):
+        """Gestion des événements en mode interaction avec objets"""
+        if event.type == pygame.KEYDOWN:
+            # Flèches haut/bas pour naviguer
+            if event.key == pygame.K_UP:
+                self.game.navigate_objects(-1)
+            elif event.key == pygame.K_DOWN:
+                self.game.navigate_objects(1)
+            
+            # R pour prendre l'objet
+            elif event.key == pygame.K_r:
+                self.game.take_selected_object()
+            
+            # ESC pour sortir sans ramasser
+            elif event.key == pygame.K_ESCAPE:
+                self.game.exit_room_interaction()
+
+    def draw_room_interaction_state(self):
+        """Dessine l'interface d'interaction avec les objets (Walk-in Closet)"""
+        # Dessiner la grille à gauche
+        self.draw_manor_grid()
+        
+        # Zone d'information à droite (fond blanc)
+        info_rect = pygame.Rect(self.info_x, self.info_y, self.info_width, self.info_height)
+        pygame.draw.rect(self.screen, WHITE, info_rect)
+        pygame.draw.rect(self.screen, BLACK, info_rect, 2)
+        
+        # Titre de l'inventaire
+        y_offset = self.info_y + 20
+        title = self.font_medium.render("Inventory:", True, BLACK)
+        self.screen.blit(title, (self.info_x + 20, y_offset))
+        
+        # Afficher l'inventaire actuel
+        y_offset += 50
+        inv = self.game.player.inventory
+        self.screen.blit(self.font_small.render(f"{inv.steps.quantity} 🦶", True, BLACK), (self.info_x + self.info_width - 80, self.info_y + 30))
+        self.screen.blit(self.font_small.render(f"{inv.gold.quantity} 💰", True, BLACK), (self.info_x + self.info_width - 80, self.info_y + 70))
+        self.screen.blit(self.font_small.render(f"{inv.gems.quantity} 💎", True, BLACK), (self.info_x + self.info_width - 80, self.info_y + 110))
+        self.screen.blit(self.font_small.render(f"{inv.keys.quantity} 🔑", True, BLACK), (self.info_x + self.info_width - 80, self.info_y + 150))
+        self.screen.blit(self.font_small.render(f"{inv.dice.quantity} 🎲", True, BLACK), (self.info_x + self.info_width - 80, self.info_y + 190))
+        
+        # Nom de la pièce actuelle
+        current_room = self.game.manor.get_room(*self.game.player.position)
+        if current_room:
+            y_offset += 100
+            room_title = self.font_medium.render("Walk-in Closet", True, BLACK)
+            self.screen.blit(room_title, (self.info_x + 20, y_offset))
+            
+            # Liste des objets disponibles
+            y_offset += 60
+            if len(self.game.room_objects) > 0:
+                for i, obj in enumerate(self.game.room_objects):
+                    # Nom de l'objet
+                    if obj.name == "Gâteau":
+                        obj_text = "Take cake"
+                        color = BLUE if i == self.game.selected_object_index else BLACK
+                    elif obj.name == "Gemmes":
+                        obj_text = "Take gem"
+                        color = BLUE if i == self.game.selected_object_index else BLACK
+                    elif obj.name == "Clés":
+                        obj_text = "Take key"
+                        color = BLUE if i == self.game.selected_object_index else BLACK
+                    elif obj.name == "Dés":
+                        obj_text = "Take dice"
+                        color = BLUE if i == self.game.selected_object_index else BLACK
+                    else:
+                        obj_text = f"Take {obj.name}"
+                        color = BLUE if i == self.game.selected_object_index else BLACK
+                    
+                    text = self.font_medium.render(obj_text, True, color)
+                    self.screen.blit(text, (self.info_x + 40, y_offset))
+                    y_offset += 50
+            else:
+                no_obj = self.font_medium.render("No objects available", True, GRAY)
+                self.screen.blit(no_obj, (self.info_x + 40, y_offset))
+            
+            # Instructions
+            y_offset += 80
+            instructions = [
+                "↑↓ to navigate",
+                "R to take",
+                "ESC to exit"
+            ]
+            for instruction in instructions:
+                text = self.font_small.render(instruction, True, DARK_GRAY)
+                self.screen.blit(text, (self.info_x + 40, y_offset))
+                y_offset += 30
 
     def draw_game_over_state(self):
         """Écran de fin"""
