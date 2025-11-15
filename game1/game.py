@@ -45,6 +45,9 @@ class Game:
         # Variables pour l'interaction avec les objets
         self.room_objects: List = []  # Objets disponibles dans la pièce actuelle
         self.selected_object_index: int = 0  # Index de l'objet sélectionné
+        
+        # Track des chambres déjà utilisées (par nom)
+        self.used_room_names: set = set()
 
         # Démarrer par l'Entrance Hall en dernière ligne, colonne 3
         entrance = self.catalog.get_entrance()
@@ -53,6 +56,7 @@ class Game:
             entrance_col = 2  # Colonne 3 (index 2)
             self.manor.place_room(entrance, entrance_row, entrance_col)
             self.player.position = (entrance_row, entrance_col)
+            self.used_room_names.add(entrance.name)  # Marquer comme utilisée
             print(f"🏰 Jeu démarré à l'Entrance Hall en position {self.player.position}")
 
         # Placer l'Antechamber comme point d'arrivée en ligne 2, colonne 3
@@ -61,6 +65,7 @@ class Game:
             goal_row = 0  # Ligne 2 (index 1)
             goal_col = 2  # Colonne 3 (index 2)
             self.manor.place_room(antechamber, goal_row, goal_col)
+            self.used_room_names.add(antechamber.name)  # Marquer comme utilisée
             print(f"🎯 Objectif: Antechamber placée en position ({goal_row}, {goal_col})")
 
         # Message pour inviter à choisir une direction
@@ -81,11 +86,44 @@ class Game:
             opposite_direction = opposite_map.get(self.selected_direction)
             print(f"🔄 Direction choisie: {self.selected_direction.value} → Les chambres doivent avoir une porte {opposite_direction.value}")
         
+        # Calculer les portes interdites selon la position cible
+        current_pos = self.player.position
+        target_pos = self.manor.get_adjacent_position(current_pos, self.selected_direction) if self.selected_direction else None
+        
+        forbidden_doors = []
+        if target_pos:
+            row, col = target_pos
+            # Interdire les portes qui donneraient sur l'extérieur du manoir
+            if row == 0:
+                forbidden_doors.append(Direction.NORTH)
+            if row == self.manor.height - 1:
+                forbidden_doors.append(Direction.SOUTH)
+            if col == 0:
+                forbidden_doors.append(Direction.WEST)
+            if col == self.manor.width - 1:
+                forbidden_doors.append(Direction.EAST)
+            
+            if forbidden_doors:
+                forbidden_str = ', '.join([d.value for d in forbidden_doors])
+                print(f"🚫 Portes interdites à cette position: {forbidden_str}")
+        
         # Pour les tests: toujours proposer les mêmes pièces
         all_rooms = self.catalog.get_all_rooms()
         
-        # Filtrer l'entrance et l'antechamber
-        available_rooms = [r for r in all_rooms if r.name not in ["Entrance Hall", "Antechamber"]]
+        # Filtrer l'entrance, l'antechamber ET les chambres déjà utilisées
+        available_rooms = [
+            r for r in all_rooms 
+            if r.name not in ["Entrance Hall", "Antechamber"] 
+            and r.name not in self.used_room_names
+        ]
+        
+        if len(available_rooms) == 0:
+            print("❌ Plus aucune chambre disponible!")
+            print("   Toutes les chambres ont été utilisées.")
+            self.pending_room_selection = []
+            return
+        
+        print(f"🏠 {len(available_rooms)} chambre(s) non utilisée(s) disponible(s)")
         
         # Filtrer les chambres qui ont une porte dans la direction OPPOSÉE
         if opposite_direction:
@@ -99,6 +137,14 @@ class Game:
                 print(f"ℹ️  Seulement {len(compatible_rooms)} chambre(s) compatible(s) avec porte {opposite_direction.value}")
         else:
             compatible_rooms = available_rooms
+        
+        # Filtrer les chambres qui n'ont AUCUNE porte interdite
+        if forbidden_doors:
+            compatible_rooms = [
+                r for r in compatible_rooms 
+                if not any(door in forbidden_doors for door in r.doors_directions)
+            ]
+            print(f"✅ {len(compatible_rooms)} chambre(s) sans portes interdites")
         
         # Choisir jusqu'à 3 pièces (ou moins si pas assez disponibles)
         num_to_select = min(3, len(compatible_rooms))
@@ -153,6 +199,10 @@ class Game:
                 # Place la pièce
                 self.manor.place_room(selected_room, *new_pos)
                 print(f"✓ Pièce '{selected_room.name}' placée en {new_pos} ({self.selected_direction.value})")
+                
+                # Marquer la chambre comme utilisée
+                self.used_room_names.add(selected_room.name)
+                print(f"📝 Chambre '{selected_room.name}' marquée comme utilisée ({len(self.used_room_names)} chambres utilisées au total)")
                 
                 # Déplacer le joueur dans la nouvelle pièce
                 self.player.position = new_pos

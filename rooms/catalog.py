@@ -480,8 +480,8 @@ class RoomCatalog:
             name="Secret Passage",
             color=RoomColor.ORANGE,
             doors=[Direction.NORTH, Direction.SOUTH],# il doit depenser une cle pour pouvoir choir la porte de north
-            gem_cost=1,
-            rarity=2,
+            gem_cost=2,
+            rarity=1,
             objects=[Keys(1)]
         ))
 
