@@ -32,7 +32,7 @@ class Game:
 
     def __init__(self):
         self.player = Player()
-        self.manor = Manor(width=5, height=10)
+        self.manor = Manor(width=5, height=9)
         self.catalog = RoomCatalog()
         self.state = GameState.PLAYING  # Commencer en mode PLAYING pour choisir direction
 
