@@ -14,6 +14,16 @@ class Direction(Enum):
     EAST = "east"
     WEST = "west"
 
+    def opposite(self) -> 'Direction':
+        """Retourne la direction opposée"""
+        opposites = {
+            Direction.NORTH: Direction.SOUTH,
+            Direction.SOUTH: Direction.NORTH,
+            Direction.EAST: Direction.WEST,
+            Direction.WEST: Direction.EAST
+        }
+        return opposites[self]
+
 
 class RoomColor(Enum):
     """Énumération des couleurs de pièces"""

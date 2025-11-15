@@ -87,32 +87,6 @@ class Game:
         # Filtrer l'entrance et l'antechamber
         available_rooms = [r for r in all_rooms if r.name not in ["Entrance Hall", "Antechamber"]]
         
-        # Calculer la position où la nouvelle chambre sera placée
-        current_row, current_col = self.player.position
-        if self.selected_direction:
-            next_pos = self.manor.get_adjacent_position(self.player.position, self.selected_direction)
-            if next_pos:
-                next_row, next_col = next_pos
-            else:
-                next_row, next_col = current_row, current_col
-        else:
-            next_row, next_col = current_row, current_col
-        
-        # Déterminer les directions qui donneraient sur un mur
-        forbidden_doors = []
-        if next_col == 0:  # Colonne ouest (0)
-            forbidden_doors.append(Direction.WEST)
-        if next_col == self.manor.width - 1:  # Colonne est (4)
-            forbidden_doors.append(Direction.EAST)
-        if next_row == 0:  # Ligne nord (0)
-            forbidden_doors.append(Direction.NORTH)
-        if next_row == self.manor.height - 1:  # Ligne sud (8)
-            forbidden_doors.append(Direction.SOUTH)
-        
-        if forbidden_doors:
-            forbidden_str = ', '.join([d.value for d in forbidden_doors])
-            print(f"🚫 Position ({next_row}, {next_col}): Portes interdites: {forbidden_str}")
-        
         # Filtrer les chambres qui ont une porte dans la direction OPPOSÉE
         if opposite_direction:
             compatible_rooms = [r for r in available_rooms if opposite_direction in r.doors_directions]
@@ -125,37 +99,6 @@ class Game:
                 print(f"ℹ️  Seulement {len(compatible_rooms)} chambre(s) compatible(s) avec porte {opposite_direction.value}")
         else:
             compatible_rooms = available_rooms
-        
-        # Filtrer les chambres dont les portes ne donneraient pas sur un mur
-        if forbidden_doors:
-            def has_forbidden_door(room):
-                """Vérifie si la chambre a une porte interdite"""
-                for door in room.doors_directions:
-                    if door in forbidden_doors:
-                        return True
-                return False
-            
-            # Filtrer les chambres sans portes interdites
-            filtered_rooms = [r for r in compatible_rooms if not has_forbidden_door(r)]
-            
-            if len(filtered_rooms) == 0:
-                # Si aucune chambre compatible après filtrage avec direction opposée,
-                # chercher dans TOUTES les chambres (ignorer la contrainte de direction opposée)
-                print(f"⚠️ Aucune chambre compatible avec porte {opposite_direction.value if opposite_direction else 'N/A'} ET sans porte vers les murs!")
-                print(f"   Recherche de chambres sans porte vers les murs (sans contrainte de direction)...")
-                
-                # Chercher parmi TOUTES les chambres disponibles
-                filtered_rooms = [r for r in available_rooms if not has_forbidden_door(r)]
-                
-                if len(filtered_rooms) == 0:
-                    print(f"❌ ERREUR: Aucune chambre du catalogue n'est compatible avec cette position!")
-                    print(f"   Les chambres proposées auront des portes inutilisables...")
-                else:
-                    compatible_rooms = filtered_rooms
-                    print(f"✅ {len(compatible_rooms)} chambre(s) trouvée(s) sans porte vers les murs")
-            else:
-                compatible_rooms = filtered_rooms
-                print(f"✅ {len(compatible_rooms)} chambre(s) compatible(s) sans porte vers les murs")
         
         # Choisir jusqu'à 3 pièces (ou moins si pas assez disponibles)
         num_to_select = min(3, len(compatible_rooms))
@@ -294,6 +237,13 @@ class Game:
         # Vérifier si la chambre actuelle a une porte dans cette direction
         if not current_room.has_door(direction):
             print(f"❌ Pas de porte au {direction.value} dans {current_room.name}")
+            return False
+
+        # NOUVEAU: Vérifier si la chambre de destination a une porte dans la direction opposée
+        opposite_direction = direction.opposite()
+        if not dest_room.has_door(opposite_direction):
+            print(f"❌ La chambre {dest_room.name} n'a pas de porte au {opposite_direction.value} (direction opposée)")
+            print(f"   Vous ne pouvez pas entrer dans cette chambre depuis {direction.value}")
             return False
 
         door = current_room.get_door(direction)
