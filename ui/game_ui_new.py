@@ -88,8 +88,28 @@ class ImprovedGameUI:
             for filename in os.listdir(rooms_path):
                 if filename.endswith('.png'):
                     # Extraire le nom de base de la pièce
-                    # "Entrance_Hall_Icon_blue.png" -> "Entrance Hall"
-                    name = filename.replace('_Icon_blue.png', '').replace('_Icon_green.png', '').replace('_Icon_red.png', '').replace('_Icon_yellow.png', '').replace('_Icon.png', '').replace('_Iconblue.png', '').replace('_', ' ')
+                    # Gérer les nouveaux formats: "BLUEAttic_Icon.png", "ORANGECorridor_Icon.png", etc.
+                    name = filename
+                    
+                    # Enlever les préfixes de couleur (plus longs d'abord pour éviter les collisions)
+                    color_prefixes = ['GREEMYELLOWVIOLET', 'YELLOWVIOLET', 'BLUE', 'GREEN', 'RED', 'YELLOW', 'VIOLET', 'ORANGE']
+                    for prefix in color_prefixes:
+                        if name.startswith(prefix):
+                            name = name[len(prefix):]
+                            break
+                    
+                    # Enlever les suffixes standards
+                    name = name.replace('_Icon_blue.png', '').replace('_Icon_green.png', '').replace('_Icon_red.png', '').replace('_Icon_yellow.png', '').replace('_Icon.png', '').replace('_Iconblue.png', '')
+                    
+                    # Gérer le cas spécial %27 (apostrophe encodée)
+                    name = name.replace("%27", "'")
+                    
+                    # Remplacer underscores par espaces
+                    name = name.replace('_', ' ')
+                    
+                    # Nettoyer les espaces multiples
+                    name = ' '.join(name.split())
+                    
                     filepath = os.path.join(rooms_path, filename)
                     try:
                         image = pygame.image.load(filepath)
@@ -97,15 +117,20 @@ class ImprovedGameUI:
                         self.room_images[name] = image
                         
                         # Créer mapping couleur -> image (prendre la première de chaque couleur)
-                        if 'blue' in filename.lower() and 'blue' not in self.color_to_image:
+                        filename_lower = filename.lower()
+                        if filename.startswith('BLUE') and 'blue' not in self.color_to_image:
                             self.color_to_image['blue'] = image
-                        elif 'green' in filename.lower() and 'green' not in self.color_to_image:
+                        elif filename.startswith('GREEN') and 'green' not in self.color_to_image:
                             self.color_to_image['green'] = image
-                        elif 'red' in filename.lower() and 'red' not in self.color_to_image:
+                        elif filename.startswith('RED') and 'red' not in self.color_to_image:
                             self.color_to_image['red'] = image
-                        elif 'yellow' in filename.lower() and 'yellow' not in self.color_to_image:
+                        elif filename.startswith('YELLOW') and 'yellow' not in self.color_to_image:
                             self.color_to_image['yellow'] = image
                             self.color_to_image['orange'] = image  # Orange utilise yellow
+                        elif filename.startswith('VIOLET') and 'purple' not in self.color_to_image:
+                            self.color_to_image['purple'] = image
+                        elif filename.startswith('ORANGE') and 'orange' not in self.color_to_image:
+                            self.color_to_image['orange'] = image
                         
                         print(f"✓ Image chargée: {filename} -> '{name}'")
                     except Exception as e:

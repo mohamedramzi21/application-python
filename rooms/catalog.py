@@ -31,26 +31,19 @@ class RoomCatalog:
 
         # 1. Library (blue)
         self.available_rooms.append(Room(
-            name="BLUELibrary",
+            name="Library",
             color=RoomColor.BLUE,
-            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[Keys(1)]
         ))
-        """
-        Ajout de nouvelles pièces avec effets spéciaux
-        À ajouter dans rooms/catalog.py dans la méthode _initialize_rooms()
-        """
-
-        # ============ NOUVELLES PIÈCES AVEC EFFETS SPÉCIAUX ============
-
         
         # 2. Dining Room (blue)
         self.available_rooms.append(Room(
-            name="BLUEDining Room",
+            name="Dining Room",
             color=RoomColor.BLUE,
-            doors=[Direction.WEST,Direction.EAST, Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[Gems(1), Keys(1), Dice(1), Cake()]
@@ -58,9 +51,9 @@ class RoomCatalog:
 
         # 3. Mail Room (blue)
         self.available_rooms.append(Room(
-            name="BLUEMail Room",
+            name="Mail Room",
             color=RoomColor.BLUE,
-            doors=[Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -68,9 +61,9 @@ class RoomCatalog:
 
         # 4. Music Room (blue)
         self.available_rooms.append(Room(
-            name="BLUEMusic Room",
+            name="Music Room",
             color=RoomColor.BLUE,
-            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -78,19 +71,19 @@ class RoomCatalog:
 
         # 5. Garage (blue)
         self.available_rooms.append(Room(
-            name="BLUEGarage",
+            name="Garage",
             color=RoomColor.BLUE,
-            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=1,
             rarity=1,
             objects=[]
         ))
 
-        # 6. Courtyard (blue)
+        # 6. Courtyard (green)
         self.available_rooms.append(Room(
-            name="GREENCourtyard",
+            name="Courtyard",
             color=RoomColor.GREEN,
-            doors=[ Direction.SOUTH, Direction.EAST, Direction.WEST],  # À MODIFIER
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -98,9 +91,9 @@ class RoomCatalog:
 
         # 7. Observatory (blue)
         self.available_rooms.append(Room(
-            name="BLUEObservatory",
+            name="Observatory",
             color=RoomColor.BLUE,
-            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=1,
             rarity=2,
             objects=[Gems(1)]
@@ -108,9 +101,9 @@ class RoomCatalog:
 
         # 8. Rumpus Room (blue)
         self.available_rooms.append(Room(
-            name="BLUERumpus Room",
+            name="Rumpus Room",
             color=RoomColor.BLUE,
-            doors=[Direction.NORTH, Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.NORTH, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
             objects=[]
@@ -118,9 +111,9 @@ class RoomCatalog:
 
         # 9. Security (blue)
         self.available_rooms.append(Room(
-            name="BLUESecurity",
+            name="Security",
             color=RoomColor.BLUE,
-            doors=[Direction.EAST, Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.EAST, Direction.WEST, Direction.SOUTH],
             gem_cost=1,
             rarity=1,
             objects=[Keys(1)]
@@ -130,9 +123,9 @@ class RoomCatalog:
 
         # 10. Veranda (green) - Walk-in Closet avec objets à ramasser
         self.available_rooms.append(Room(
-            name="GREENVeranda",
+            name="Veranda",
             color=RoomColor.GREEN,
-            doors=[Direction.SOUTH, Direction.NORTH],  # À MODIFIER
+            doors=[Direction.SOUTH, Direction.NORTH],
             gem_cost=0,
             rarity=1,
             objects=[Gems(1), Keys(1), Dice(1), Cake()]
@@ -144,7 +137,7 @@ class RoomCatalog:
         self.available_rooms.append(Room(
             name="The Pool",
             color=RoomColor.BLUE,
-            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],  # À MODIFIER
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],
             gem_cost=2,
             rarity=2,
             objects=[]
@@ -152,9 +145,9 @@ class RoomCatalog:
 
         # 12. Commissary (yellow)
         self.available_rooms.append(Room(
-            name="YELLOWCommissary",
+            name="Commissary",
             color=RoomColor.YELLOW,
-            doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
+            doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=1,
             rarity=1,
             objects=[Apple(), Banana()]
@@ -164,9 +157,9 @@ class RoomCatalog:
 
         # 13. Chapel (red)
         self.available_rooms.append(Room(
-            name="REDChapel",
-            color=RoomColor.PURPLE,
-            doors=[Direction.SOUTH, Direction.EAST,Direction.WEST],  # À MODIFIER
+            name="Chapel",
+            color=RoomColor.RED,
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],
             gem_cost=2,
             rarity=2,
             objects=[],
@@ -190,6 +183,538 @@ class RoomCatalog:
 
         # 15. Entrance Hall (blue) - Point de départ
         # Note: Créé automatiquement par get_entrance() si nécessaire
+
+        # ============ NOUVELLES PIÈCES BLEUES ============
+
+        # 16. Attic (blue)
+        self.available_rooms.append(Room(
+            name="Attic",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Keys(1), Dice(1)]
+        ))
+
+        # 17. Closet (blue)
+        self.available_rooms.append(Room(
+            name="Closet",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake()]
+        ))
+
+        # 18. Coat Check (blue)
+        self.available_rooms.append(Room(
+            name="Coat Check",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH, Direction.EAST],
+            gem_cost=0,
+            rarity=1,
+            objects=[Keys(1)]
+        ))
+
+        # 19. Conference Room (blue)
+        self.available_rooms.append(Room(
+            name="Conference Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
+            gem_cost=1,
+            rarity=2,
+            objects=[Keys(2), Dice(1)]
+        ))
+
+        # 20. Drawing Room (blue)
+        self.available_rooms.append(Room(
+            name="Drawing Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.SOUTH],
+            gem_cost=1,
+            rarity=1,
+            objects=[Apple()]
+        ))
+
+        # 21. Freezer (blue)
+        self.available_rooms.append(Room(
+            name="Freezer",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake(), Sandwich()]
+        ))
+
+        # 22. Gallery (blue)
+        self.available_rooms.append(Room(
+            name="Gallery",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.EAST],
+            gem_cost=1,
+            rarity=2,
+            objects=[Gems(1)]
+        ))
+
+        # 23. Parlor (blue)
+        self.available_rooms.append(Room(
+            name="Parlor",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Keys(1)]
+        ))
+
+        # 24. Pump Room (blue)
+        self.available_rooms.append(Room(
+            name="Pump Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 25. Room 8 (blue)
+        self.available_rooms.append(Room(
+            name="Room 8",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Keys(1)]
+        ))
+
+        # 26. Rotunda (blue)
+        self.available_rooms.append(Room(
+            name="Rotunda",
+            color=RoomColor.BLUE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=1,
+            rarity=2,
+            objects=[Gems(1), Keys(1)]
+        ))
+
+        # 27. Spare Room (blue)
+        self.available_rooms.append(Room(
+            name="Spare Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 28. Storeroom (blue)
+        self.available_rooms.append(Room(
+            name="Storeroom",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Keys(2)]
+        ))
+
+        # 29. The Foundation (blue)
+        self.available_rooms.append(Room(
+            name="The Foundation",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=1,
+            rarity=2,
+            objects=[Gems(1)]
+        ))
+
+        # 30. Utility Closet (blue)
+        self.available_rooms.append(Room(
+            name="Utility Closet",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Keys(1)]
+        ))
+
+        # 31. Walk-in Closet (blue)
+        self.available_rooms.append(Room(
+            name="Walk-in Closet",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake(), Dice(1)]
+        ))
+
+        # 32. Workshop (blue)
+        self.available_rooms.append(Room(
+            name="Workshop",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH, Direction.EAST],
+            gem_cost=0,
+            rarity=1,
+            objects=[Keys(1)]
+        ))
+
+        # 33. Billiard Room (blue)
+        self.available_rooms.append(Room(
+            name="Billiard Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
+            gem_cost=1,
+            rarity=1,
+            objects=[Dice(1)]
+        ))
+
+        # 34. Boiler Room (blue)
+        self.available_rooms.append(Room(
+            name="Boiler Room",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # ============ NOUVELLES PIÈCES VERTES (JARDINS) ============
+
+        # 35. Morning Room (green)
+        self.available_rooms.append(Room(
+            name="Morning Room",
+            color=RoomColor.GREEN,
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=0,
+            rarity=1,
+            objects=[Gems(1), Apple()]
+        ))
+
+        # 36. Patio (green)
+        self.available_rooms.append(Room(
+            name="Patio",
+            color=RoomColor.GREEN,
+            doors=[Direction.SOUTH, Direction.NORTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Gems(1)]
+        ))
+
+        # 37. Terrace (green)
+        self.available_rooms.append(Room(
+            name="Terrace",
+            color=RoomColor.GREEN,
+            doors=[Direction.SOUTH, Direction.WEST],
+            gem_cost=0,
+            rarity=1,
+            objects=[Gems(1), Keys(1)]
+        ))
+
+        # 38. Greenhouse (green/yellow/violet)
+        self.available_rooms.append(Room(
+            name="Greenhouse",
+            color=RoomColor.GREEN,
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=1,
+            rarity=2,
+            objects=[Gems(2), Apple(), Banana()]
+        ))
+
+        # ============ NOUVELLES PIÈCES ORANGE (COULOIRS) ============
+
+        # 39. Corridor (orange)
+        self.available_rooms.append(Room(
+            name="Corridor",
+            color=RoomColor.ORANGE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 40. East Wing Hall (orange)
+        self.available_rooms.append(Room(
+            name="East Wing Hall",
+            color=RoomColor.ORANGE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 41. Foyer (orange)
+        self.available_rooms.append(Room(
+            name="Foyer",
+            color=RoomColor.ORANGE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 42. Hallway (orange)
+        self.available_rooms.append(Room(
+            name="Hallway",
+            color=RoomColor.ORANGE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 43. Passageway (orange)
+        self.available_rooms.append(Room(
+            name="Passageway",
+            color=RoomColor.ORANGE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 44. Secret Passage (orange)
+        self.available_rooms.append(Room(
+            name="Secret Passage",
+            color=RoomColor.ORANGE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=1,
+            rarity=2,
+            objects=[Keys(1)]
+        ))
+
+        # 45. West Wing Hall (orange)
+        self.available_rooms.append(Room(
+            name="West Wing Hall",
+            color=RoomColor.ORANGE,
+            doors=[Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # ============ NOUVELLES PIÈCES ROUGES (DANGEREUSES) ============
+
+        # 46. Archives (red)
+        self.available_rooms.append(Room(
+            name="Archives",
+            color=RoomColor.RED,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 47. Darkroom (red)
+        self.available_rooms.append(Room(
+            name="Darkroom",
+            color=RoomColor.RED,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 48. Furnace (red)
+        self.available_rooms.append(Room(
+            name="Furnace",
+            color=RoomColor.RED,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 49. Gymnasium (red)
+        self.available_rooms.append(Room(
+            name="Gymnasium",
+            color=RoomColor.RED,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 50. Lavatory (red)
+        self.available_rooms.append(Room(
+            name="Lavatory",
+            color=RoomColor.RED,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 51. Maid Chamber (red)
+        self.available_rooms.append(Room(
+            name="Maid Chamber",
+            color=RoomColor.RED,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # 52. Weight Room (red)
+        self.available_rooms.append(Room(
+            name="Weight Room",
+            color=RoomColor.RED,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[]
+        ))
+
+        # ============ NOUVELLES PIÈCES VIOLETTES (CHAMBRES) ============
+
+        # 53. Bedroom (purple)
+        self.available_rooms.append(Room(
+            name="Bedroom",
+            color=RoomColor.PURPLE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake()]
+        ))
+
+        # 54. Boudoir (purple)
+        self.available_rooms.append(Room(
+            name="Boudoir",
+            color=RoomColor.PURPLE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake()]
+        ))
+
+        # 55. Bunk Room (purple)
+        self.available_rooms.append(Room(
+            name="Bunk Room",
+            color=RoomColor.PURPLE,
+            doors=[Direction.SOUTH, Direction.EAST],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake()]
+        ))
+
+        # 56. Guest Bedroom (purple)
+        self.available_rooms.append(Room(
+            name="Guest Bedroom",
+            color=RoomColor.PURPLE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake()]
+        ))
+
+        # 57. Her Lady's Chamber (purple)
+        self.available_rooms.append(Room(
+            name="Her Lady's Chamber",
+            color=RoomColor.PURPLE,
+            doors=[Direction.SOUTH],
+            gem_cost=1,
+            rarity=2,
+            objects=[Cake(), Meal()]
+        ))
+
+        # 58. Master Bedroom (purple)
+        self.available_rooms.append(Room(
+            name="Master Bedroom",
+            color=RoomColor.PURPLE,
+            doors=[Direction.SOUTH],
+            gem_cost=1,
+            rarity=2,
+            objects=[Cake(), Meal()]
+        ))
+
+        # 59. Nursery (purple)
+        self.available_rooms.append(Room(
+            name="Nursery",
+            color=RoomColor.PURPLE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake()]
+        ))
+
+        # 60. Servant's Quarters (purple)
+        self.available_rooms.append(Room(
+            name="Servant's Quarters",
+            color=RoomColor.PURPLE,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Cake()]
+        ))
+
+        # ============ NOUVELLES PIÈCES JAUNES (MAGASINS) ============
+
+        # 61. Bookshop (yellow/violet)
+        self.available_rooms.append(Room(
+            name="Bookshop",
+            color=RoomColor.YELLOW,
+            doors=[Direction.SOUTH, Direction.WEST],
+            gem_cost=1,
+            rarity=1,
+            objects=[Keys(2), Dice(1)]
+        ))
+
+        # 62. Kitchen (yellow/violet)
+        self.available_rooms.append(Room(
+            name="Kitchen",
+            color=RoomColor.YELLOW,
+            doors=[Direction.SOUTH, Direction.EAST],
+            gem_cost=0,
+            rarity=1,
+            objects=[Apple(), Banana(), Cake()]
+        ))
+
+        # 63. Laundry Room (yellow/violet)
+        self.available_rooms.append(Room(
+            name="Laundry Room",
+            color=RoomColor.YELLOW,
+            doors=[Direction.SOUTH],
+            gem_cost=0,
+            rarity=1,
+            objects=[Keys(1)]
+        ))
+
+        # 64. Locksmith (yellow/violet)
+        self.available_rooms.append(Room(
+            name="Locksmith",
+            color=RoomColor.YELLOW,
+            doors=[Direction.SOUTH],
+            gem_cost=1,
+            rarity=2,
+            objects=[Keys(3)]
+        ))
+
+        # 65. Mount Holly Gift Shop (yellow/violet)
+        self.available_rooms.append(Room(
+            name="Mount Holly Gift Shop",
+            color=RoomColor.YELLOW,
+            doors=[Direction.SOUTH, Direction.WEST],
+            gem_cost=1,
+            rarity=2,
+            objects=[Keys(2), Gems(1), Dice(1)]
+        ))
+
+        # 66. Showroom (yellow/violet)
+        self.available_rooms.append(Room(
+            name="Showroom",
+            color=RoomColor.YELLOW,
+            doors=[Direction.SOUTH, Direction.EAST],
+            gem_cost=1,
+            rarity=1,
+            objects=[Keys(1), Dice(1)]
+        ))
+
+        # 67. The Armory (yellow/violet)
+        self.available_rooms.append(Room(
+            name="The Armory",
+            color=RoomColor.YELLOW,
+            doors=[Direction.SOUTH],
+            gem_cost=2,
+            rarity=2,
+            objects=[Keys(2), Gems(1)]
+        ))
 
     def draw_rooms(self, count: int, position: tuple, context: dict = None) -> List[Room]:
         """

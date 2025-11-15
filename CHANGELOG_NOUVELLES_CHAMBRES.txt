@@ -1,0 +1,129 @@
+================================================================================
+RÉSUMÉ DES MODIFICATIONS - AJOUT DES NOUVELLES CHAMBRES
+================================================================================
+
+✅ 1. CONVERSION DES IMAGES WebP → PNG
+   - Script: convert_webp_to_png.py
+   - Résultat: 22 fichiers WebP convertis/supprimés
+   - Toutes les images sont maintenant en format PNG
+
+✅ 2. MISE À JOUR DU CHARGEMENT D'IMAGES (ui/game_ui_new.py)
+   - Méthode _load_images() modifiée
+   - Support des préfixes de couleur: BLUE, GREEN, RED, YELLOW, VIOLET, ORANGE
+   - Support des préfixes composés: GREEMYELLOWVIOLET, YELLOWVIOLET
+   - Gestion de l'apostrophe encodée (%27)
+   - Conversion automatique: underscores → espaces
+
+✅ 3. AJOUT DE 53 NOUVELLES CHAMBRES (rooms/catalog.py)
+   
+   📊 STATISTIQUE PAR COULEUR:
+   
+   🔵 BLUE (Communes) - 24 chambres:
+      • Attic, Closet, Coat Check, Conference Room, Drawing Room
+      • Freezer, Gallery, Parlor, Pump Room, Room 8
+      • Rotunda, Spare Room, Storeroom, The Foundation
+      • Utility Closet, Walk-in Closet, Workshop
+      • Billiard Room, Boiler Room
+   
+   🟢 GREEN (Jardins) - 4 chambres:
+      • Morning Room, Patio, Terrace, Greenhouse
+   
+   🟠 ORANGE (Couloirs) - 7 chambres:
+      • Corridor, East Wing Hall, Foyer, Hallway
+      • Passageway, Secret Passage, West Wing Hall
+   
+   🔴 RED (Dangereuses) - 7 chambres:
+      • Archives, Darkroom, Furnace, Gymnasium
+      • Lavatory, Maid Chamber, Weight Room
+   
+   🟣 PURPLE (Chambres à coucher) - 8 chambres:
+      • Bedroom, Boudoir, Bunk Room, Guest Bedroom
+      • Her Lady's Chamber, Master Bedroom, Nursery
+      • Servant's Quarters
+   
+   🟡 YELLOW (Magasins) - 7 chambres:
+      • Bookshop, Kitchen, Laundry Room, Locksmith
+      • Mount Holly Gift Shop, Showroom, The Armory
+
+================================================================================
+TOTAL DES CHAMBRES DISPONIBLES
+================================================================================
+
+Avant: 15 chambres
+Après:  67 chambres
+Nouvelles: 52 chambres
+
+================================================================================
+FICHIERS MODIFIÉS
+================================================================================
+
+1. ui/game_ui_new.py
+   - Lignes 81-117: Nouvelle logique de chargement d'images
+   - Support des préfixes de couleur
+   - Conversion automatique des noms de fichiers
+
+2. rooms/catalog.py
+   - Lignes 33-179: Chambres existantes (noms nettoyés)
+   - Lignes 183-545: 53 nouvelles chambres ajoutées
+   - Organisation par couleur
+
+3. convert_webp_to_png.py
+   - Nouveau script pour conversion WebP → PNG
+   - Gestion automatique de la suppression des WebP
+
+================================================================================
+RÈGLES D'ASSOCIATION NOM ↔ IMAGE
+================================================================================
+
+Format des fichiers images:
+   [PRÉFIXE_COULEUR][Nom_Avec_Underscores]_Icon.png
+
+Exemples:
+   BLUEAttic_Icon.png           → "Attic"
+   ORANGECorridor_Icon.png      → "Corridor"
+   VIOLETBedroom_Icon.png       → "Bedroom"
+   YELLOWVIOLETKitchen_Icon.png → "Kitchen"
+
+Transformation automatique:
+   1. Enlever préfixe de couleur (BLUE, GREEN, etc.)
+   2. Enlever suffixe (_Icon.png, _Icon_blue.png, etc.)
+   3. Remplacer underscores par espaces
+   4. Convertir %27 en apostrophe (')
+
+================================================================================
+CONFIGURATION DES NOUVELLES CHAMBRES
+================================================================================
+
+Suivant les règles de couleur (COLOR_RULES_GUIDE.md):
+
+🔵 BLUE: Objets variés, 1-3 portes, coût 0-2 gemmes
+🟢 GREEN: Gems + fruits, 2-4 portes, jardins
+🟠 ORANGE: 3-4 portes (maximum), peu d'objets, couloirs
+🔴 RED: 1 porte (minimum), peu d'objets, dangereuses
+🟣 PURPLE: Cake/nourriture, 1-2 portes, récupération
+🟡 YELLOW: Keys/Dice/objets utiles, 1-3 portes, magasins
+
+================================================================================
+PROCHAINES ÉTAPES RECOMMANDÉES
+================================================================================
+
+1. ✅ Tester le jeu pour vérifier le chargement des images
+2. ⚠️  Ajuster les portes et objets selon l'équilibrage du jeu
+3. ⚠️  Ajouter des effets spéciaux aux chambres spéciales
+4. ⚠️  Tester le tirage aléatoire des nouvelles chambres
+5. ⚠️  Équilibrer les coûts en gemmes et la rareté
+
+================================================================================
+COMMANDES POUR TESTER
+================================================================================
+
+# Lancer le jeu:
+python3 run_game_improved.py
+
+# Tester le chargement d'images:
+python3 test_images.py
+
+# Vérifier le nombre de chambres:
+python3 -c "from rooms.catalog import RoomCatalog; c = RoomCatalog(); print(f'Total: {c.get_room_count()} chambres')"
+
+================================================================================
