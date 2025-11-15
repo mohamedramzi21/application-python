@@ -31,7 +31,7 @@ class RoomCatalog:
 
         # 1. Library (blue)
         self.available_rooms.append(Room(
-            name="Library",
+            name="BLUELibrary",
             color=RoomColor.BLUE,
             doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
             gem_cost=0,
@@ -48,7 +48,7 @@ class RoomCatalog:
         
         # 2. Dining Room (blue)
         self.available_rooms.append(Room(
-            name="Dining Room",
+            name="BLUEDining Room",
             color=RoomColor.BLUE,
             doors=[Direction.WEST,Direction.EAST, Direction.SOUTH],  # À MODIFIER
             gem_cost=0,
@@ -58,7 +58,7 @@ class RoomCatalog:
 
         # 3. Mail Room (blue)
         self.available_rooms.append(Room(
-            name="Mail Room",
+            name="BLUEMail Room",
             color=RoomColor.BLUE,
             doors=[Direction.SOUTH],  # À MODIFIER
             gem_cost=0,
@@ -68,7 +68,7 @@ class RoomCatalog:
 
         # 4. Music Room (blue)
         self.available_rooms.append(Room(
-            name="Music Room",
+            name="BLUEMusic Room",
             color=RoomColor.BLUE,
             doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
             gem_cost=0,
@@ -78,7 +78,7 @@ class RoomCatalog:
 
         # 5. Garage (blue)
         self.available_rooms.append(Room(
-            name="Garage",
+            name="BLUEGarage",
             color=RoomColor.BLUE,
             doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
             gem_cost=1,
@@ -88,8 +88,8 @@ class RoomCatalog:
 
         # 6. Courtyard (blue)
         self.available_rooms.append(Room(
-            name="Courtyard",
-            color=RoomColor.BLUE,
+            name="GREENCourtyard",
+            color=RoomColor.GREEN,
             doors=[ Direction.SOUTH, Direction.EAST, Direction.WEST],  # À MODIFIER
             gem_cost=0,
             rarity=1,
@@ -98,7 +98,7 @@ class RoomCatalog:
 
         # 7. Observatory (blue)
         self.available_rooms.append(Room(
-            name="Observatory",
+            name="BLUEObservatory",
             color=RoomColor.BLUE,
             doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
             gem_cost=1,
@@ -108,7 +108,7 @@ class RoomCatalog:
 
         # 8. Rumpus Room (blue)
         self.available_rooms.append(Room(
-            name="Rumpus Room",
+            name="BLUERumpus Room",
             color=RoomColor.BLUE,
             doors=[Direction.NORTH, Direction.SOUTH],  # À MODIFIER
             gem_cost=0,
@@ -118,7 +118,7 @@ class RoomCatalog:
 
         # 9. Security (blue)
         self.available_rooms.append(Room(
-            name="Security",
+            name="BLUESecurity",
             color=RoomColor.BLUE,
             doors=[Direction.EAST, Direction.WEST, Direction.SOUTH],  # À MODIFIER
             gem_cost=1,
@@ -130,7 +130,7 @@ class RoomCatalog:
 
         # 10. Veranda (green) - Walk-in Closet avec objets à ramasser
         self.available_rooms.append(Room(
-            name="Veranda",
+            name="GREENVeranda",
             color=RoomColor.GREEN,
             doors=[Direction.SOUTH, Direction.NORTH],  # À MODIFIER
             gem_cost=0,
@@ -152,7 +152,7 @@ class RoomCatalog:
 
         # 12. Commissary (yellow)
         self.available_rooms.append(Room(
-            name="Commissary",
+            name="YELLOWCommissary",
             color=RoomColor.YELLOW,
             doors=[Direction.WEST, Direction.SOUTH],  # À MODIFIER
             gem_cost=1,
@@ -164,7 +164,7 @@ class RoomCatalog:
 
         # 13. Chapel (red)
         self.available_rooms.append(Room(
-            name="Chapel",
+            name="REDChapel",
             color=RoomColor.PURPLE,
             doors=[Direction.SOUTH, Direction.EAST,Direction.WEST],  # À MODIFIER
             gem_cost=2,

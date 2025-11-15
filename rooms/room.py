@@ -163,6 +163,42 @@ class Room:
         """Appelé quand le joueur entre dans la pièce"""
         self.visited = True
 
+        # ========================================
+        # APPLIQUER LES RÈGLES PAR COULEUR
+        # ========================================
+        
+        if self.color == RoomColor.YELLOW:
+            # 🟡 MAGASINS: Échange d'or contre des objets
+            print("💰 Vous entrez dans un magasin. Vous pouvez échanger de l'or contre des objets.")
+            # TODO: Implémenter la logique d'achat
+            
+        elif self.color == RoomColor.GREEN:
+            # 🟢 JARDINS: Gemmes, trous à creuser, objets permanents
+            print("🌿 Vous entrez dans un jardin. Cherchez des gemmes et des endroits où creuser!")
+            # Les jardins ont souvent des gemmes (déjà dans objects)
+            
+        elif self.color == RoomColor.PURPLE:
+            # 🟣 CHAMBRES: Effets permettant de regagner des pas
+            print("😴 Vous entrez dans une chambre. Un lieu de repos.")
+            # TODO: Ajouter effet de récupération automatique
+            # Exemple: player.inventory.steps.quantity += 2
+            
+        elif self.color == RoomColor.ORANGE:
+            # 🟠 COULOIRS: Beaucoup de portes
+            print("🚪 Vous êtes dans un couloir avec plusieurs portes.")
+            # Les couloirs ont déjà beaucoup de portes (dans doors_directions)
+            
+        elif self.color == RoomColor.RED:
+            # 🔴 INDÉSIRABLES: Caractéristiques négatives
+            print("⚠️ Attention! Cette pièce semble dangereuse...")
+            # TODO: Effet négatif (retirer des pas, etc.)
+            # Exemple: player.inventory.steps.quantity -= 2
+            
+        elif self.color == RoomColor.BLUE:
+            # 🔵 COMMUNES: Effets variés
+            print(f"🏠 Vous entrez dans {self.name}.")
+            # Les pièces bleues ont des effets variés (gérés par self.effect)
+
         # Appliquer l'effet de la pièce si elle en a un
         if self.effect and hasattr(self.effect, 'on_enter'):
             self.effect.on_enter(player, self)
