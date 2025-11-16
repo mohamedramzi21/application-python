@@ -25,9 +25,10 @@ class RoomCatalog:
         self._initialize_rooms()
 
         # Apply a random rotation (0/90/180/270) to each room to increase directional variety.
-        # Skip Entrance Hall and Antechamber to keep them stable.
+        # Skip rooms where rotation causes visual misalignment with their images.
+        no_rotation_rooms = ["Entrance Hall", "Antechamber", "Patio", "Master Bedroom"]
         for room in self.available_rooms:
-            if room.name in ["Entrance Hall", "Antechamber"]:
+            if room.name in no_rotation_rooms:
                 continue
             # Only rotate if the room has doors defined
             if not getattr(room, 'doors_directions', None):
@@ -211,15 +212,7 @@ class RoomCatalog:
             objects=[Keys(1), Dice(1), LockedChest([Gold(20), Gems(1), Keys(1)])]
         ))
 
-        # 17. Closet (blue)
-        self.available_rooms.append(Room(
-            name="Closet",
-            color=RoomColor.BLUE,
-            doors=[Direction.SOUTH],
-            gem_cost=0,
-            rarity=1,
-            objects=[Cake()]
-        ))
+        
 
         # 18. Coat Check (blue)
         self.available_rooms.append(Room(
@@ -394,15 +387,7 @@ class RoomCatalog:
             objects=[Gems(1), Apple()]
         ))
 
-        # 36. Patio (green)
-        self.available_rooms.append(Room(
-            name="Patio",
-            color=RoomColor.GREEN,
-            doors=[Direction.SOUTH, Direction.WEST],
-            gem_cost=0,
-            rarity=1,
-            objects=[Gems(1)]
-        ))
+       
 
         # 37. Terrace (green)
         self.available_rooms.append(Room(
@@ -621,15 +606,7 @@ class RoomCatalog:
             objects=[Cake(), Meal()]
         ))
 
-        # 58. Master Bedroom (purple) - Porte Sud verrouillée (chambre privée)
-        self.available_rooms.append(Room(
-            name="Master Bedroom",
-            color=RoomColor.PURPLE,
-            doors=[Direction.SOUTH],
-            gem_cost=1,
-            rarity=2,
-            objects=[Cake(), Meal()],
-        ))
+       
 
         # 59. Nursery (purple)
         self.available_rooms.append(Room(

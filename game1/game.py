@@ -216,6 +216,13 @@ class Game:
                     self.player.inventory.steps.quantity -= steps_lost
                     print(f"⚠️ DANGER! Cette pièce vous fait perdre {steps_lost} pas! (pas restants: {self.player.inventory.steps.quantity})")
                 
+                # Si c'est une pièce violette, gagner automatiquement 4-12 gold
+                if selected_room.color == RoomColor.PURPLE:
+                    import random
+                    gold_gained = random.randint(4, 12)
+                    self.player.inventory.gold.quantity += gold_gained
+                    print(f"💰 BONUS! Vous gagnez {gold_gained} gold dans cette chambre! (gold total: {self.player.inventory.gold.quantity})")
+                
                 # Réinitialiser la direction
                 self.selected_direction = None
                 
