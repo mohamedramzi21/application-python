@@ -84,7 +84,11 @@ class ImprovedGameUI:
         """Charge toutes les images"""
         assets_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "assets", "images")
         
-        # Pas d'alias arbitraires: chaque image doit correspondre strictement au nom de la pièce
+        # Aliases d'images: si une pièce n'a pas son image exacte, utiliser l'image d'une autre pièce
+        # Exemple: "Tool Shed" doit utiliser l'image de "Workshop" plutôt que "Boiler Room"
+        self.room_image_aliases = {
+            "Tool Shed": "Workshop",
+        }
         
         # Charger images de pièces
         rooms_path = os.path.join(assets_path, "rooms")
@@ -175,8 +179,12 @@ class ImprovedGameUI:
         
         # Vérifier si l'image originale existe
         if room_name not in self.room_images_original:
-            # Aucun alias: si l'image manque, retourner None pour afficher un placeholder neutre
-            return None
+            # Essayer via alias
+            alias = self.room_image_aliases.get(room_name)
+            if alias and alias in self.room_images_original:
+                room_name = alias
+            else:
+                return self.room_images.get(room.name)
         
         # Récupérer la rotation de la pièce
         rotation_deg = getattr(room, 'rotation_degrees', 0)
@@ -431,8 +439,12 @@ class ImprovedGameUI:
             # Récupérer l'image avec rotation appliquée
             img = self.get_room_image(room)
             
-            # Pas d'image spécifique → pas de substitution par une autre pièce
-            # On affichera un placeholder coloré plus bas
+            # Fallback sur mapping couleur ou image aléatoire si pas d'image spécifique
+            if img is None:
+                if hasattr(self, 'color_to_image') and room.color.value in self.color_to_image:
+                    img = self.color_to_image[room.color.value]
+                elif len(self.room_images) > 0:
+                    img = list(self.room_images.values())[i % len(self.room_images)]
             
             if img:
                 # Afficher l'image
@@ -481,9 +493,12 @@ class ImprovedGameUI:
                     # Récupérer l'image avec rotation appliquée
                     img = self.get_room_image(room)
                     
-                    # Pas d'image → on utilisera un placeholder coloré
+                    # Fallback sur mapping couleur ou image aléatoire
                     if img is None:
-                        pass
+                        if hasattr(self, 'color_to_image') and room.color.value in self.color_to_image:
+                            img = self.color_to_image[room.color.value]
+                        elif len(self.room_images) > 0:
+                            img = list(self.room_images.values())[0]
                     
                     if img:
                         # Afficher l'image

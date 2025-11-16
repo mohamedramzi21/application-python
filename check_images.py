@@ -7,6 +7,11 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from rooms.catalog import RoomCatalog
 
+# Aliases d'images utilisés aussi par l'UI pour la vérification
+ROOM_IMAGE_ALIASES = {
+    "Tool Shed": "Workshop",
+}
+
 def check_images_for_rooms():
     """Vérifie que chaque chambre a une image"""
     
@@ -34,6 +39,15 @@ def check_images_for_rooms():
                 name = name.replace("%27", "'")
                 name = name.replace('_', ' ')
                 name = ' '.join(name.split())
+
+                # Appliquer les mêmes corrections d'alias que dans l'UI
+                name_fixes = {
+                    "Her Ladys Chamber": "Her Lady's Chamber",
+                }
+                fixed_name = name_fixes.get(name, name)
+                if fixed_name == name and " Ladys " in name:
+                    fixed_name = name.replace(" Ladys ", " Lady's ")
+                name = fixed_name
                 
                 room_images[name] = filename
     
@@ -46,9 +60,18 @@ def check_images_for_rooms():
     found = []
     
     for room in catalog.available_rooms:
-        if room.name in room_images:
+        name = room.name
+        if name not in room_images and name in ROOM_IMAGE_ALIASES:
+            # Vérifier l'alias (par ex. Tool Shed -> Workshop)
+            alias = ROOM_IMAGE_ALIASES[name]
+            if alias in room_images:
+                print(f"✅ {room.name:30s} → {room_images[alias]} (alias: {alias})")
+                found.append(room.name)
+                continue
+
+        if name in room_images:
             found.append(room.name)
-            print(f"✅ {room.name:30s} → {room_images[room.name]}")
+            print(f"✅ {room.name:30s} → {room_images[name]}")
         else:
             missing.append(room.name)
             print(f"❌ {room.name:30s} → IMAGE MANQUANTE!")
