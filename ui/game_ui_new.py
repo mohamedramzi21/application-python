@@ -243,7 +243,7 @@ class ImprovedGameUI:
                 return
 
             # W/A/S/D pour SÉLECTIONNER UNE DIRECTION (vérifier d'abord s'il y a une porte)
-            if event.key == pygame.K_w:  # W = Nord
+            if event.key == pygame.K_z:  # W = Nord
                 if current_room.has_door(Direction.NORTH):
                     self.selected_direction = Direction.NORTH
                     print("🧭 Direction sélectionnée: NORD")
@@ -261,7 +261,7 @@ class ImprovedGameUI:
                     print("🧭 Direction sélectionnée: EST")
                 else:
                     print(f"❌ Pas de porte à l'EST dans {current_room.name}")
-            elif event.key == pygame.K_a:  # A = Ouest
+            elif event.key == pygame.K_q:  # A = Ouest
                 if current_room.has_door(Direction.WEST):
                     self.selected_direction = Direction.WEST
                     print("🧭 Direction sélectionnée: OUEST")
