@@ -208,6 +208,14 @@ class Game:
                 self.player.position = new_pos
                 print(f"✓ Vous entrez dans {selected_room.name} (pas restants: {self.player.inventory.steps.quantity})")
                 
+                # Si c'est une pièce rouge, retirer automatiquement 2-10 pas
+                from core.game_objects import RoomColor
+                if selected_room.color == RoomColor.RED:
+                    import random
+                    steps_lost = random.randint(2, 10)
+                    self.player.inventory.steps.quantity -= steps_lost
+                    print(f"⚠️ DANGER! Cette pièce vous fait perdre {steps_lost} pas! (pas restants: {self.player.inventory.steps.quantity})")
+                
                 # Réinitialiser la direction
                 self.selected_direction = None
                 
@@ -320,6 +328,14 @@ class Game:
             
         self.player.position = new_pos
         print(f"✓ Déplacement vers {dest_room.name} (pas restants: {self.player.inventory.steps.quantity})")
+        
+        # Si c'est une pièce rouge, retirer automatiquement 2-10 pas
+        from core.game_objects import RoomColor
+        if dest_room.color == RoomColor.RED:
+            import random
+            steps_lost = random.randint(2, 10)
+            self.player.inventory.steps.quantity -= steps_lost
+            print(f"⚠️ DANGER! Cette pièce vous fait perdre {steps_lost} pas! (pas restants: {self.player.inventory.steps.quantity})")
         
         # Appeler la méthode enter() de la pièce pour appliquer les effets (magasin, etc.)
         dest_room.enter(self.player)
