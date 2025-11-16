@@ -5,7 +5,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from typing import List, Optional, Tuple, TYPE_CHECKING, Dict
 import random
 
 from core.game_objects import Direction, RoomColor, RoomEffect, GameObject
@@ -89,10 +89,11 @@ class Room:
             doors: List[Direction],
             gem_cost: int = 0,
             rarity: int = 0,
-            objects: Optional[List[GameObject]] = None,
-            effect: Optional[RoomEffect] = None,
-            image_path: Optional[str] = None,
-            placement_condition: Optional[callable] = None
+                objects: Optional[List[GameObject]] = None,
+                effect: Optional[RoomEffect] = None,
+                image_path: Optional[str] = None,
+                placement_condition: Optional[callable] = None,
+                specific_door_locks: Optional[Dict[Direction, int]] = None
     ):
         """
         name: Nom de la pièce
@@ -114,6 +115,9 @@ class Room:
         self.effect = effect
         self.image_path = image_path
         self.placement_condition = placement_condition
+        # Spécifier des niveaux de verrouillage précis pour certaines portes
+        # (par ex. {Direction.NORTH: 1})
+        self.specific_door_locks: Optional[Dict[Direction, int]] = specific_door_locks
 
         # Portes réelles avec leur niveau de verrouillage (créées lors du placement)
         self.doors: dict[Direction, Door] = {}
@@ -130,8 +134,13 @@ class Room:
     def initialize_doors(self, row: int, total_rows: int):
         """Initialise les portes avec des niveaux de verrouillage aléatoires"""
         for direction in self.doors_directions:
-            # Calculer le niveau de verrouillage en fonction de la progression
-            lock_level = self._calculate_lock_level(row, total_rows)
+            # Si un verrouillage spécifique a été fourni pour cette porte, l'utiliser
+            if self.specific_door_locks and direction in self.specific_door_locks:
+                lock_level = self.specific_door_locks[direction]
+            else:
+                # Calculer le niveau de verrouillage en fonction de la progression
+                lock_level = self._calculate_lock_level(row, total_rows)
+
             self.doors[direction] = Door(direction, lock_level)
 
     def _calculate_lock_level(self, row: int, total_rows: int) -> int:
