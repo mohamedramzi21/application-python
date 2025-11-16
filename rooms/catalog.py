@@ -60,7 +60,7 @@ class RoomCatalog:
             doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[Gems(1), Keys(1), Dice(1), Cake()]
+            objects=[Gems(1), Keys(1), Dice(1), Cake(),Gold(40)]
         ))
 
         # 3. Mail Room (blue)
@@ -80,7 +80,7 @@ class RoomCatalog:
             doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[]
+            objects=[Gold(4)]
         ))
 
         # 5. Garage (blue)
@@ -110,7 +110,7 @@ class RoomCatalog:
             doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=1,
             rarity=2,
-            objects=[Gems(1)]
+            objects=[Gems(1), Gold(40)]
         ))
 
         # 8. Rumpus Room (blue)
@@ -142,7 +142,7 @@ class RoomCatalog:
             doors=[Direction.SOUTH, Direction.NORTH],
             gem_cost=0,
             rarity=1,
-            objects=[Gems(1), Keys(1), Dice(1), Cake()]
+            objects=[Gems(1), Keys(1), Dice(1), Cake(),Gold(40)]
         ))
 
         # ============ PIÈCES SPÉCIALES ============

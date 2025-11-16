@@ -376,6 +376,9 @@ class Game:
             if obj.name == "Gâteau":
                 self.player.inventory.steps.quantity += 10
                 print(f"🍰 Cake ramassé! +10 pas (Total: {self.player.inventory.steps.quantity})")
+            elif obj.name == "Gold":
+                self.player.inventory.gold.quantity += obj.quantity
+                print(f"💰 Gold ramassé! +{obj.quantity} pièces d'or (Total: {self.player.inventory.gold.quantity})")
             elif obj.name == "Gemmes":
                 self.player.inventory.gems.quantity += obj.quantity
                 print(f"💎 Gem ramassée! (Total: {self.player.inventory.gems.quantity})")
