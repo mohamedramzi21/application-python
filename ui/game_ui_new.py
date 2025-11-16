@@ -594,6 +594,291 @@ class ImprovedGameUI:
             elif event.key == pygame.K_ESCAPE:
                 self.game.exit_room_interaction()
 
+    # ============================================
+# AJOUTER APRÈS LA LIGNE ~200 (après __init__)
+# ============================================
+
+def draw_door_indicators(self):
+    """Dessine des indicateurs colorés pour les portes (verrouillées ou non)"""
+    current_room = self.game.manor.get_room(*self.game.player.position)
+    if not current_room:
+        return
+    
+    # Position du joueur sur la grille
+    row, col = self.game.player.position
+    player_x = self.grid_x + col * self.cell_size
+    player_y = self.grid_y + row * self.cell_size
+    
+    # Taille des indicateurs
+    indicator_size = 12
+    
+    # Pour chaque direction avec une porte
+    for direction in current_room.doors_directions:
+        door = current_room.get_door(direction)
+        
+        # Déterminer la couleur selon le niveau de verrouillage
+        if door:
+            if door.lock_level == 0:
+                color = (0, 255, 0)  # Vert = déverrouillée
+            elif door.lock_level == 1:
+                color = (255, 255, 0)  # Jaune = verrouillée
+            else:  # lock_level == 2
+                color = (255, 0, 0)  # Rouge = double tour
+        else:
+            color = (0, 255, 0)  # Pas encore initialisée = déverrouillée
+        
+        # Position de l'indicateur selon la direction
+        if direction == Direction.NORTH:
+            x = player_x + self.cell_size // 2 - indicator_size // 2
+            y = player_y - indicator_size - 5
+        elif direction == Direction.SOUTH:
+            x = player_x + self.cell_size // 2 - indicator_size // 2
+            y = player_y + self.cell_size + 5
+        elif direction == Direction.WEST:
+            x = player_x - indicator_size - 5
+            y = player_y + self.cell_size // 2 - indicator_size // 2
+        elif direction == Direction.EAST:
+            x = player_x + self.cell_size + 5
+            y = player_y + self.cell_size // 2 - indicator_size // 2
+        
+        # Dessiner un cercle coloré
+        pygame.draw.circle(self.screen, color, (x + indicator_size // 2, y + indicator_size // 2), indicator_size // 2)
+        pygame.draw.circle(self.screen, WHITE, (x + indicator_size // 2, y + indicator_size // 2), indicator_size // 2, 2)
+
+
+def draw_door_info_panel(self):
+    """Affiche les informations détaillées sur les portes disponibles"""
+    current_room = self.game.manor.get_room(*self.game.player.position)
+    if not current_room:
+        return
+    
+    # Position du panneau
+    panel_x = self.info_x + 50
+    panel_y = self.info_y + 600
+    
+    # Titre
+    title = self.font_medium.render("Available Doors:", True, BLACK)
+    self.screen.blit(title, (panel_x, panel_y))
+    
+    panel_y += 40
+    
+    # Lister chaque porte
+    for direction in [Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST]:
+        if direction in current_room.doors_directions:
+            door = current_room.get_door(direction)
+            
+            # Symbole de direction
+            if direction == Direction.NORTH:
+                dir_text = "↑ North"
+            elif direction == Direction.SOUTH:
+                dir_text = "↓ South"
+            elif direction == Direction.EAST:
+                dir_text = "→ East"
+            else:
+                dir_text = "← West"
+            
+            # État de la porte
+            if door:
+                if door.lock_level == 0:
+                    status = "✓ Unlocked"
+                    color = (0, 150, 0)
+                elif door.lock_level == 1:
+                    status = "🔒 Locked (need 1 key)"
+                    color = (200, 150, 0)
+                else:
+                    status = "🔒🔒 Double lock (need 1 key)"
+                    color = (200, 0, 0)
+            else:
+                status = "✓ Unlocked"
+                color = (0, 150, 0)
+            
+            # Afficher
+            dir_surf = self.font_small.render(dir_text, True, BLACK)
+            self.screen.blit(dir_surf, (panel_x, panel_y))
+            
+            status_surf = self.font_small.render(status, True, color)
+            self.screen.blit(status_surf, (panel_x + 100, panel_y))
+            
+            panel_y += 30
+
+
+# ============================================
+# MODIFIER draw_playing_state() - LIGNE ~250
+# ============================================
+
+def draw_playing_state(self):
+    """Mode exploration - comme capture d'écran 2"""
+    # Zone gauche (noire) - Grille du manoir
+    self.draw_manor_grid()
+    
+    # ← NOUVEAU: Afficher les indicateurs de portes
+    self.draw_door_indicators()
+    
+    # Afficher l'indicateur de direction sélectionnée (barre blanche)
+    if self.selected_direction:
+        self.draw_direction_indicator()
+
+    # Zone droite (blanche) - Inventaire et info
+    pygame.draw.rect(self.screen, WHITE, (self.info_x, self.info_y, self.info_width, self.info_height))
+    
+    # Inventaire
+    self.draw_inventory_panel()
+    
+    # Info pièce actuelle
+    self.draw_current_room_panel()
+    
+    # ← NOUVEAU: Info portes disponibles
+    self.draw_door_info_panel()
+
+    # Instructions
+    y = self.screen_height - 60
+    inst = self.font_small.render("AWSD: Choose direction | SPACE: Confirm | Arrows: Move", True, WHITE)
+    self.screen.blit(inst, (self.screen_width // 2 - inst.get_width() // 2, y))
+
+
+# ============================================
+# MODIFIER handle_playing_events() - LIGNE ~170
+# ============================================
+
+def handle_playing_events(self, event):
+    """En mode jeu: AWSD pour choisir direction, Flèches pour se déplacer"""
+    if event.type == pygame.KEYDOWN:
+        current_room = self.game.manor.get_room(*self.game.player.position)
+        if not current_room:
+            return
+
+        # W/A/S/D pour SÉLECTIONNER UNE DIRECTION
+        if event.key == pygame.K_w:  # W = Nord
+            if current_room.has_door(Direction.NORTH):
+                door = current_room.get_door(Direction.NORTH)
+                self.selected_direction = Direction.NORTH
+                
+                # ← NOUVEAU: Afficher info sur la porte
+                if door and door.lock_level > 0 and not door.is_opened:
+                    keys_have = self.game.player.inventory.keys.quantity
+                    lock_type = "verrouillée" if door.lock_level == 1 else "double tour"
+                    if keys_have >= 1:
+                        print(f"🔒 Direction NORD sélectionnée ({lock_type} - {keys_have} clés disponibles)")
+                    else:
+                        print(f"🔒 Direction NORD ({lock_type} - BESOIN de 1 clé, vous en avez {keys_have})")
+                else:
+                    print("🧭 Direction NORD sélectionnée (déverrouillée)")
+            else:
+                print(f"❌ Pas de porte au NORD dans {current_room.name}")
+        
+        elif event.key == pygame.K_s:  # S = Sud
+            if current_room.has_door(Direction.SOUTH):
+                door = current_room.get_door(Direction.SOUTH)
+                self.selected_direction = Direction.SOUTH
+                
+                if door and door.lock_level > 0 and not door.is_opened:
+                    keys_have = self.game.player.inventory.keys.quantity
+                    lock_type = "verrouillée" if door.lock_level == 1 else "double tour"
+                    if keys_have >= 1:
+                        print(f"🔒 Direction SUD sélectionnée ({lock_type} - {keys_have} clés disponibles)")
+                    else:
+                        print(f"🔒 Direction SUD ({lock_type} - BESOIN de 1 clé, vous en avez {keys_have})")
+                else:
+                    print("🧭 Direction SUD sélectionnée (déverrouillée)")
+            else:
+                print(f"❌ Pas de porte au SUD dans {current_room.name}")
+        
+        elif event.key == pygame.K_d:  # D = Est
+            if current_room.has_door(Direction.EAST):
+                door = current_room.get_door(Direction.EAST)
+                self.selected_direction = Direction.EAST
+                
+                if door and door.lock_level > 0 and not door.is_opened:
+                    keys_have = self.game.player.inventory.keys.quantity
+                    lock_type = "verrouillée" if door.lock_level == 1 else "double tour"
+                    if keys_have >= 1:
+                        print(f"🔒 Direction EST sélectionnée ({lock_type} - {keys_have} clés disponibles)")
+                    else:
+                        print(f"🔒 Direction EST ({lock_type} - BESOIN de 1 clé, vous en avez {keys_have})")
+                else:
+                    print("🧭 Direction EST sélectionnée (déverrouillée)")
+            else:
+                print(f"❌ Pas de porte à l'EST dans {current_room.name}")
+        
+        elif event.key == pygame.K_a:  # A = Ouest
+            if current_room.has_door(Direction.WEST):
+                door = current_room.get_door(Direction.WEST)
+                self.selected_direction = Direction.WEST
+                
+                if door and door.lock_level > 0 and not door.is_opened:
+                    keys_have = self.game.player.inventory.keys.quantity
+                    lock_type = "verrouillée" if door.lock_level == 1 else "double tour"
+                    if keys_have >= 1:
+                        print(f"🔒 Direction OUEST sélectionnée ({lock_type} - {keys_have} clés disponibles)")
+                    else:
+                        print(f"🔒 Direction OUEST ({lock_type} - BESOIN de 1 clé, vous en avez {keys_have})")
+                else:
+                    print("🧭 Direction OUEST sélectionnée (déverrouillée)")
+            else:
+                print(f"❌ Pas de porte à l'OUEST dans {current_room.name}")
+        
+        # ESPACE pour CONFIRMER la direction
+        elif event.key == pygame.K_SPACE and self.selected_direction:
+            next_pos = self.game.manor.get_adjacent_position(self.game.player.position, self.selected_direction)
+            
+            # ← NOUVEAU: Vérifier si la porte est verrouillée
+            door = current_room.get_door(self.selected_direction)
+            if door and door.lock_level > 0 and not door.is_opened:
+                # La porte est verrouillée et pas encore ouverte
+                if self.game.player.inventory.keys.quantity > 0:
+                    # Dépenser 1 clé pour ouvrir
+                    self.game.player.inventory.spend_key()
+                    door.is_opened = True
+                    lock_type = "verrouillée" if door.lock_level == 1 else "à double tour"
+                    print(f"🔑 Porte {lock_type} ouverte avec 1 clé!")
+                    print(f"   Clés restantes: {self.game.player.inventory.keys.quantity}")
+                else:
+                    print("❌ Vous n'avez pas de clé pour ouvrir cette porte!")
+                    self.selected_direction = None
+                    return
+            
+            # Continuer normalement si la porte est ouverte ou déverrouillée
+            if next_pos and self.game.manor.get_room(*next_pos) is None:
+                print(f"🚪 Direction {self.selected_direction.value} confirmée!")
+                self.game.selected_direction = self.selected_direction
+                self.game.generate_room_selection()
+                self.selected_direction = None
+            elif next_pos is None:
+                print(f"❌ Hors des limites du manoir!")
+                self.selected_direction = None
+            else:
+                print(f"⚠️ Il y a déjà une pièce dans cette direction!")
+                self.selected_direction = None
+
+        # FLÈCHES pour SE DÉPLACER entre pièces adjacentes existantes
+        elif event.key == pygame.K_UP:
+            if current_room.has_door(Direction.NORTH):
+                self.game.try_move(Direction.NORTH)
+                self.selected_direction = None
+            else:
+                print(f"❌ Pas de porte au NORD dans {current_room.name}")
+        elif event.key == pygame.K_DOWN:
+            if current_room.has_door(Direction.SOUTH):
+                self.game.try_move(Direction.SOUTH)
+                self.selected_direction = None
+            else:
+                print(f"❌ Pas de porte au SUD dans {current_room.name}")
+        elif event.key == pygame.K_RIGHT:
+            if current_room.has_door(Direction.EAST):
+                self.game.try_move(Direction.EAST)
+                self.selected_direction = None
+            else:
+                print(f"❌ Pas de porte à l'EST dans {current_room.name}")
+        elif event.key == pygame.K_LEFT:
+            if current_room.has_door(Direction.WEST):
+                self.game.try_move(Direction.WEST)
+                self.selected_direction = None
+            else:
+                print(f"❌ Pas de porte à l'OUEST dans {current_room.name}")
+
+        # I pour inventaire
+        elif event.key == pygame.K_i:
+            print(self.game.player.inventory)
     def draw_room_interaction_state(self):
         """Dessine l'interface d'interaction avec les objets (Walk-in Closet)"""
         # Dessiner la grille à gauche
