@@ -483,9 +483,7 @@ class RoomCatalog:
             gem_cost=2,
             rarity=1,
             objects=[Keys(1)],
-            specific_door_locks={
-                Direction.NORTH: 1  # ← Porte NORTH verrouillée
-            }
+            
             
         ))
 
@@ -508,10 +506,7 @@ class RoomCatalog:
             doors=[Direction.SOUTH, Direction.NORTH, Direction.EAST,Direction.WEST],
             gem_cost=0,
             rarity=1,
-            objects=[],
-            specific_door_locks={
-                Direction.NORTH: 1  # ← AJOUT: Porte NORTH verrouillée
-            }
+            objects=[]
         ))
 
         # 47. Darkroom (red)
@@ -521,10 +516,8 @@ class RoomCatalog:
             doors=[Direction.SOUTH, Direction.EAST,Direction.WEST],
             gem_cost=0,
             rarity=1,
-            objects=[],
-            specific_door_locks={
-                Direction.EAST: 1  # ← AJOUT: Porte EAST verrouillée
-            }
+            objects=[]
+            
         ))
 
         # 48. Furnace (red)
@@ -534,10 +527,7 @@ class RoomCatalog:
             doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[],
-            specific_door_locks={
-                Direction.SOUTH: 2  # ← AJOUT: Porte SOUTH double tour!
-            }
+            objects=[]
         ))
 
         # 49. Gymnasium (red)
@@ -629,10 +619,7 @@ class RoomCatalog:
             doors=[Direction.SOUTH],
             gem_cost=1,
             rarity=2,
-            objects=[Cake(), Meal()],
-            specific_door_locks={
-                Direction.SOUTH: 1  # ← AJOUT: Chambre privée verrouillée
-            }
+            objects=[Cake(), Meal()]
         ))
 
         # 58. Master Bedroom (purple)
@@ -642,10 +629,7 @@ class RoomCatalog:
             doors=[Direction.SOUTH],
             gem_cost=1,
             rarity=2,
-            objects=[Cake(), Meal()],
-            specific_door_locks={
-                Direction.SOUTH: 1  # ← AJOUT: Chambre privée verrouillée
-            }
+            objects=[Cake(), Meal()]
         ))
 
         # 59. Nursery (purple)
@@ -708,9 +692,7 @@ class RoomCatalog:
             gem_cost=1,
             rarity=2,
             objects=[Keys(3)],
-            specific_door_locks={
-                Direction.SOUTH: 1  # ← AJOUT: Le serrurier se verrouille lui-même!
-            }
+            
         ))
 
         # 65. Mount Holly Gift Shop (yellow/violet)
@@ -721,9 +703,7 @@ class RoomCatalog:
             gem_cost=1,
             rarity=2,
             objects=[Keys(2), Gems(1), Dice(1)],
-            specific_door_locks={
-                Direction.EAST: 1  # ← AJOUT: Porte EST verrouillée
-            }
+            
         ))
 
         # 66. Showroom (yellow/violet)
@@ -744,10 +724,7 @@ class RoomCatalog:
             gem_cost=2,
             rarity=2,
             objects=[Keys(2), Gems(1)],
-            specific_door_locks={
-                Direction.NORTH: 1,  # ← AJOUT: Portes NORTH et SOUTH verrouillées
-                Direction.SOUTH: 1
-            }
+            
         ))
 
     def draw_rooms(self, count: int, position: tuple, context: dict = None) -> List[Room]:
