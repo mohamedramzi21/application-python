@@ -329,11 +329,6 @@ class ImprovedGameUI:
             elif event.key == pygame.K_r:
                 if self.game.reroll_rooms():
                     self.selected_room_index = 0
-            
-            # T pour dépenser un dé et regénérer 3 nouvelles pièces
-            elif event.key == pygame.K_t:
-                if self.game.reroll_rooms():
-                    self.selected_room_index = 0
 
     def handle_game_over_events(self, event):
         """Game over"""
@@ -585,11 +580,6 @@ class ImprovedGameUI:
             elif event.key == pygame.K_r:
                 self.game.take_selected_object()
             
-            
-            # T pour dépenser un dé et regénérer 3 nouvelles pièces
-            elif event.key == pygame.K_t:
-                if self.game.reroll_rooms():
-                    self.selected_room_index = 0
             # ESC pour sortir sans ramasser
             elif event.key == pygame.K_ESCAPE:
                 self.game.exit_room_interaction()
