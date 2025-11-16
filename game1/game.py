@@ -313,6 +313,7 @@ class Game:
 
         # Déplacement avec consommation de 1 pas
         if not self.player.inventory.use_steps(1):
+            print("💀 YOU LOSE! HARD LUCK, NEXT TIME!")
             print("❌ Plus de pas disponibles!")
             self.state = GameState.GAME_OVER
             return False

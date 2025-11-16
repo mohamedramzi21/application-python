@@ -198,6 +198,11 @@ class ImprovedGameUI:
         while running:
             self.clock.tick(self.fps)
 
+            # Vérifier si le joueur n'a plus de pas
+            if self.game.state == GameState.PLAYING and self.game.player.inventory.steps.quantity == 0:
+                self.game.state = GameState.GAME_OVER
+                print("💀 YOU LOSE! HARD LUCK, NEXT TIME!")
+            
             # Gestion des événements
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -701,8 +706,8 @@ class ImprovedGameUI:
             title = self.font_large.render("VICTORY!", True, GREEN)
             message = "You reached the Antechamber!"
         else:
-            title = self.font_large.render("GAME OVER", True, RED)
-            message = "Out of steps..." if not self.game.player.is_alive() else "Cannot progress..."
+            title = self.font_large.render("YOU LOSE!", True, RED)
+            message = "HARD LUCK, NEXT TIME!"
 
         self.screen.blit(title, (self.screen_width // 2 - title.get_width() // 2, 300))
         msg_surf = self.font_medium.render(message, True, WHITE)
