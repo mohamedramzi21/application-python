@@ -376,44 +376,57 @@ class Game:
         if 0 <= self.selected_object_index < len(self.room_objects):
             obj = self.room_objects[self.selected_object_index]
             
-            # Ajouter à l'inventaire
-            if obj.name == "Gâteau":
-                self.player.inventory.steps.quantity += 10
-                print(f"🍰 Cake ramassé! +10 pas (Total: {self.player.inventory.steps.quantity})")
-            elif obj.name == "Gold":
-                # Tout l'or nécessite désormais la pelle (Shovel)
-                if self.player.inventory.has_permanent_item("Shovel"):
-                    self.player.inventory.gold.quantity += obj.quantity
-                    print(f"💰 Gold ramassé! +{obj.quantity} pièces d'or (Total: {self.player.inventory.gold.quantity})")
+            # Vérifier si c'est un objet interactif (coffret, coffre, etc.)
+            from core.game_objects import InteractiveObject
+            if isinstance(obj, InteractiveObject):
+                # Vérifier si on peut l'ouvrir (comme Gold avec Shovel)
+                if obj.can_open(self.player):
+                    # OUVRIR LE COFFRET : remplacer par son contenu dans la liste
+                    print(f"✅ {obj.name} ouvert!")
+                    print(f"📦 Contenu du coffret:")
+                    for content_item in obj.contents:
+                        print(f"   - {content_item.name}")
+                    
+                    # Retirer le coffret de la liste
+                    self.room_objects.pop(self.selected_object_index)
+                    current_room = self.manor.get_room(*self.player.position)
+                    if current_room:
+                        try:
+                            current_room.objects.remove(obj)
+                        except ValueError:
+                            pass
+                    
+                    # AJOUTER les objets du coffret à la liste des objets disponibles
+                    for content_item in obj.contents:
+                        self.room_objects.insert(self.selected_object_index, content_item)
+                        if current_room:
+                            current_room.objects.append(content_item)
+                    
+                    print("💡 Vous pouvez maintenant ramasser les objets un par un avec R")
+                    
+                    # Ajuster l'index pour pointer sur le premier objet du coffret
+                    if len(self.room_objects) > 0:
+                        self.selected_object_index = min(self.selected_object_index, len(self.room_objects) - 1)
+                    
+                    return True
                 else:
-                    print("❗ Vous devez d'abord trouver la pelle (Shovel). Revenez ensuite pour récupérer l'or.")
+                    # Ne peut pas ouvrir - Comme Gold sans Shovel, on peut ESC et revenir
                     return False
-            elif obj.name == "Gemmes":
-                self.player.inventory.gems.quantity += obj.quantity
-                print(f"💎 Gem ramassée! (Total: {self.player.inventory.gems.quantity})")
-            elif obj.name == "Clés":
-                self.player.inventory.keys.quantity += obj.quantity
-                print(f"🔑 Key ramassée! (Total: {self.player.inventory.keys.quantity})")
-            elif obj.name == "Dés":
-                self.player.inventory.dice.quantity += obj.quantity
-                print(f"🎲 Dice ramassé! (Total: {self.player.inventory.dice.quantity})")
-            elif obj.name == "Shovel":
-                # Objet permanent : pelle -> l'ajouter comme permanent
-                added = self.player.inventory.add_permanent_item(obj)
-                if added:
-                    print(f"🛠️  Vous avez trouvé la pelle! ({obj.name})")
-                else:
-                    print(f"ℹ️  Vous possédez déjà l'objet permanent: {obj.name}")
+            
+            # Objet normal (non-interactif) - Vérifier d'abord si c'est ramassable
+            can_take = self._add_to_inventory(obj)
+            
+            # Si on ne peut pas prendre (ex: Gold sans Shovel), ne pas retirer
+            if can_take == False:
+                return False
             
             # Retirer de la liste et de la pièce
             self.room_objects.pop(self.selected_object_index)
             current_room = self.manor.get_room(*self.player.position)
             if current_room:
-                # Retirer l'objet de la pièce si présent (robuste si déjà absent)
                 try:
                     current_room.objects.remove(obj)
                 except ValueError:
-                    # L'objet n'était pas présent dans la liste de la pièce
                     pass
             
             # Ajuster l'index si nécessaire
@@ -426,6 +439,45 @@ class Game:
             
             return True
         return False
+    
+    def _add_to_inventory(self, obj):
+        """Ajoute un objet à l'inventaire du joueur"""
+        if obj.name == "Gâteau" or obj.name == "Cake":
+            self.player.inventory.steps.quantity += 10
+            print(f"🍰 Cake ramassé! +10 pas (Total: {self.player.inventory.steps.quantity})")
+        elif obj.name == "Gold" or obj.name == "Or":
+            # Tout l'or nécessite la pelle (Shovel)
+            if self.player.inventory.has_permanent_item("Shovel"):
+                self.player.inventory.gold.quantity += obj.quantity
+                print(f"💰 Gold ramassé! +{obj.quantity} pièces d'or (Total: {self.player.inventory.gold.quantity})")
+            else:
+                print("❗ Vous devez d'abord trouver la pelle (Shovel). Revenez ensuite pour récupérer l'or.")
+                return False
+        elif obj.name == "Gemmes" or obj.name == "Gems":
+            self.player.inventory.gems.quantity += obj.quantity
+            print(f"💎 Gem ramassée! (Total: {self.player.inventory.gems.quantity})")
+        elif obj.name == "Clés" or obj.name == "Keys":
+            self.player.inventory.keys.quantity += obj.quantity
+            print(f"🔑 Key ramassée! (Total: {self.player.inventory.keys.quantity})")
+        elif obj.name == "Dés" or obj.name == "Dice":
+            self.player.inventory.dice.quantity += obj.quantity
+            print(f"🎲 Dice ramassé! (Total: {self.player.inventory.dice.quantity})")
+        elif obj.name == "Shovel" or obj.name == "Pelle":
+            added = self.player.inventory.add_permanent_item(obj)
+            if added:
+                print(f"🛠️  Vous avez trouvé la pelle! ({obj.name})")
+            else:
+                print(f"ℹ️  Vous possédez déjà l'objet permanent: {obj.name}")
+        elif obj.name == "Marteau" or obj.name == "Hammer":
+            added = self.player.inventory.add_permanent_item(obj)
+            if added:
+                print(f"🔨 Vous avez trouvé le marteau! ({obj.name})")
+            else:
+                print(f"ℹ️  Vous possédez déjà l'objet permanent: {obj.name}")
+        else:
+            print(f"✅ {obj.name} ramassé!")
+        
+        return True
     
     def exit_room_interaction(self):
         """Sort du mode interaction"""

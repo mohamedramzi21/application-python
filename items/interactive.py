@@ -123,3 +123,35 @@ class Locker(InteractiveObject):
         else:
             print("Vous avez besoin d'une clé pour ouvrir ce casier.")
             return False
+
+
+class LockedChest(InteractiveObject):
+    """Coffret verrouillé nécessitant un marteau pour être ouvert - Comme Gold avec Shovel"""
+
+    def __init__(self, contents: list = None):
+        if contents is None:
+            contents = self._generate_contents()
+        super().__init__("Coffret Verrouillé", contents)
+
+    def _generate_contents(self) -> list:
+        """Génère 2-3 objets aléatoires pour le coffret"""
+        possible_contents = [
+            Gold(random.randint(10, 30)),
+            Keys(random.randint(1, 2)),
+            Gems(1),
+            Dice(1),
+            Cake(),
+            Sandwich()
+        ]
+        num_items = random.randint(2, 3)  # 2-3 objets
+        return random.sample(possible_contents, num_items)
+
+    def can_open(self, player: 'Player') -> bool:
+        """Nécessite un marteau pour ouvrir - Comme Gold nécessite Shovel"""
+        if player.inventory.has_permanent_item("Marteau"):
+            print("🔨 Vous utilisez le marteau pour briser le coffret verrouillé!")
+            return True
+        else:
+            print("🔒 Ce coffret est solidement verrouillé. Vous avez besoin d'un marteau pour l'ouvrir.")
+            print("   Revenez quand vous aurez trouvé un marteau!")
+            return False

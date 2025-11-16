@@ -201,14 +201,14 @@ class RoomCatalog:
 
         # ============ NOUVELLES PIÈCES BLEUES ============
 
-        # 16. Attic (blue)
+        # 16. Attic (blue) - Coffret verrouillé caché
         self.available_rooms.append(Room(
             name="Attic",
             color=RoomColor.BLUE,
             doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[Keys(1), Dice(1)]
+            objects=[Keys(1), Dice(1), LockedChest([Gold(20), Gems(1), Keys(1)])]
         ))
 
         # 17. Closet (blue)
@@ -261,14 +261,14 @@ class RoomCatalog:
             objects=[Cake(), Sandwich()]
         ))
 
-        # 22. Gallery (blue)
+        # 22. Gallery (blue) - Coffret précieux
         self.available_rooms.append(Room(
             name="Gallery",
             color=RoomColor.BLUE,
             doors=[Direction.SOUTH,Direction.NORTH],
             gem_cost=1,
             rarity=2,
-            objects=[Gems(1)]
+            objects=[Gems(1), LockedChest([Gold(30), Gems(2), Dice(2)])]
         ))
 
         # 23. Parlor (blue)
@@ -321,34 +321,34 @@ class RoomCatalog:
             objects=[]
         ))
 
-        # 28. Storeroom (blue)
+        # 28. Storeroom (blue) - Coffret dans l'entrepôt
         self.available_rooms.append(Room(
             name="Storeroom",
             color=RoomColor.BLUE,
             doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[Keys(2)]
+            objects=[Keys(2), LockedChest([Gold(15), Dice(1), Cake()])]
         ))
 
-        # 29. The Foundation (blue)
+        # 29. The Foundation (blue) - Marteau dans les fondations
         self.available_rooms.append(Room(
             name="The Foundation",
             color=RoomColor.BLUE,
             doors=[Direction.SOUTH,Direction.EAST,Direction.WEST],
             gem_cost=1,
             rarity=2,
-            objects=[Gems(1)]
+            objects=[Gems(1), Hammer()]
         ))
 
-        # 30. Utility Closet (blue)
+        # 30. Utility Closet (blue) - Coffret dans le placard
         self.available_rooms.append(Room(
             name="Utility Closet",
             color=RoomColor.BLUE,
             doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[Keys(1)]
+            objects=[Keys(1), LockedChest([Gold(25), Keys(2), Gems(1)])]
         ))
 
         # 31. Walk-in Closet (blue)
@@ -361,25 +361,25 @@ class RoomCatalog:
             objects=[Cake(), Dice(1)]
         ))
 
-        # 32. Workshop (blue)
+        # 32. Workshop (blue) - Marteau dans l'atelier
         self.available_rooms.append(Room(
             name="Workshop",
             color=RoomColor.BLUE,
             doors=[Direction.SOUTH, Direction.NORTH],
             gem_cost=0,
             rarity=1,
-            objects=[Keys(1)]
+            objects=[Keys(1), Hammer()]
         ))
 
         
-        # 34. Boiler Room (blue)
+        # 34. Boiler Room (blue) - Marteau dans la chaufferie + Coffret
         self.available_rooms.append(Room(
             name="Boiler Room",
             color=RoomColor.BLUE,
             doors=[Direction.SOUTH,Direction.WEST,Direction.EAST],
             gem_cost=0,
             rarity=1,
-            objects=[]
+            objects=[Hammer(), LockedChest([Gold(18), Dice(1), Keys(1)])]
         ))
 
         # ============ NOUVELLES PIÈCES VERTES (JARDINS) ============
