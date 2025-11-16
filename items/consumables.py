@@ -18,6 +18,7 @@ class Gold(ConsumableItem):
     """Pièces d'or"""
     def __init__(self, quantity: int = 0):
         super().__init__("Gold", quantity)
+ 
 
 
 class Gems(ConsumableItem):

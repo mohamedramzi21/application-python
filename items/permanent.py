@@ -1,18 +1,17 @@
-"""
-Objets permanents du jeu
-"""
+"""Objets permanents du jeu"""
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.game_objects import PermanentItem
-from items.permanent import PermanentItem
+
 
 class Shovel(PermanentItem):
-    """Pelle pour creuser"""
+    """Shovel (pelle) - objet permanent unique"""
 
     def __init__(self):
-        super().__init__("Pelle", "Permet de creuser pour trouver des objets")
+        # Nom en anglais pour correspondre aux vérifications du code
+        super().__init__("Shovel", "Permet de creuser pour trouver des objets")
 
     def apply_effect(self, context: dict) -> None:
         """La pelle permet de creuser les DigSpot"""

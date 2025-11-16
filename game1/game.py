@@ -377,8 +377,13 @@ class Game:
                 self.player.inventory.steps.quantity += 10
                 print(f"🍰 Cake ramassé! +10 pas (Total: {self.player.inventory.steps.quantity})")
             elif obj.name == "Gold":
-                self.player.inventory.gold.quantity += obj.quantity
-                print(f"💰 Gold ramassé! +{obj.quantity} pièces d'or (Total: {self.player.inventory.gold.quantity})")
+                # Tout l'or nécessite désormais la pelle (Shovel)
+                if self.player.inventory.has_permanent_item("Shovel"):
+                    self.player.inventory.gold.quantity += obj.quantity
+                    print(f"💰 Gold ramassé! +{obj.quantity} pièces d'or (Total: {self.player.inventory.gold.quantity})")
+                else:
+                    print("❗ Vous devez d'abord trouver la pelle (Shovel). Revenez ensuite pour récupérer l'or.")
+                    return False
             elif obj.name == "Gemmes":
                 self.player.inventory.gems.quantity += obj.quantity
                 print(f"💎 Gem ramassée! (Total: {self.player.inventory.gems.quantity})")
@@ -388,12 +393,24 @@ class Game:
             elif obj.name == "Dés":
                 self.player.inventory.dice.quantity += obj.quantity
                 print(f"🎲 Dice ramassé! (Total: {self.player.inventory.dice.quantity})")
+            elif obj.name == "Shovel":
+                # Objet permanent : pelle -> l'ajouter comme permanent
+                added = self.player.inventory.add_permanent_item(obj)
+                if added:
+                    print(f"🛠️  Vous avez trouvé la pelle! ({obj.name})")
+                else:
+                    print(f"ℹ️  Vous possédez déjà l'objet permanent: {obj.name}")
             
             # Retirer de la liste et de la pièce
             self.room_objects.pop(self.selected_object_index)
             current_room = self.manor.get_room(*self.player.position)
             if current_room:
-                current_room.objects.remove(obj)
+                # Retirer l'objet de la pièce si présent (robuste si déjà absent)
+                try:
+                    current_room.objects.remove(obj)
+                except ValueError:
+                    # L'objet n'était pas présent dans la liste de la pièce
+                    pass
             
             # Ajuster l'index si nécessaire
             if self.selected_object_index >= len(self.room_objects) and self.selected_object_index > 0:

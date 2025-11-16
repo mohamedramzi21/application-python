@@ -11,7 +11,7 @@ from typing import List, Optional
 from rooms.room import Room
 from core.game_objects import Direction, RoomColor
 from rooms.effects import *
-from items.consumables import *
+from items.consumables import Steps, Gold, Gems, Keys, Dice
 from items.food import *
 from items.interactive import *
 from items.permanent import *
@@ -60,7 +60,7 @@ class RoomCatalog:
             doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[Gems(1), Keys(1), Dice(1), Cake(),Gold(40)]
+            objects=[Gems(1), Keys(1), Dice(1), Cake(),Gold(40),Shovel()]
         ))
 
         # 3. Mail Room (blue)
@@ -70,7 +70,7 @@ class RoomCatalog:
             doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[]
+            objects=[Shovel()]
         ))
 
         # 4. Music Room (blue)
@@ -80,7 +80,7 @@ class RoomCatalog:
             doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[Gold(4)]
+            objects=[Gold(4),Shovel()]
         ))
 
         # 5. Garage (blue)
@@ -725,6 +725,28 @@ class RoomCatalog:
             rarity=2,
             objects=[Keys(2), Gems(1)],
             
+        ))
+
+        # ============ PIÈCES SPÉCIALES AVEC PELLE ET OR ============
+
+        # 68. Tool Shed (blue) - Contient la pelle
+        self.available_rooms.append(Room(
+            name="Tool Shed",
+            color=RoomColor.BLUE,
+            doors=[Direction.SOUTH, Direction.WEST],
+            gem_cost=0,
+            rarity=1,
+            objects=[Shovel(), Keys(1)],  # La pelle peut être trouvée ici
+        ))
+
+        # 69. Gold Mine (green) - Contient l'or qui nécessite la pelle
+        self.available_rooms.append(Room(
+            name="Gold Mine",
+            color=RoomColor.GREEN,
+            doors=[Direction.SOUTH, Direction.EAST],
+            gem_cost=0,
+            rarity=1,
+            objects=[Gold(100), Gems(1)],  # Or (exige la pelle avant de pouvoir le prendre)
         ))
 
     def draw_rooms(self, count: int, position: tuple, context: dict = None) -> List[Room]:
