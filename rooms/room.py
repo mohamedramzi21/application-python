@@ -92,7 +92,8 @@ class Room:
             objects: Optional[List[GameObject]] = None,
             effect: Optional[RoomEffect] = None,
             image_path: Optional[str] = None,
-            placement_condition: Optional[callable] = None
+            placement_condition: Optional[callable] = None,
+            shop_item: Optional[dict] = None
     ):
         """
         name: Nom de la pièce
@@ -104,6 +105,7 @@ class Room:
         effect: Effet spécial de la pièce
         image_path: Chemin vers l'image de la pièce
         placement_condition: Fonction qui vérifie si la pièce peut être placée à une position
+        shop_item: Dict avec 'item', 'price' pour les magasins YELLOW
         """
         self.name = name
         self.color = color
@@ -114,6 +116,8 @@ class Room:
         self.effect = effect
         self.image_path = image_path
         self.placement_condition = placement_condition
+        self.shop_item = shop_item
+        self.shop_purchased = False  # Pour éviter les achats multiples
 
         # Portes réelles avec leur niveau de verrouillage (créées lors du placement)
         self.doors: dict[Direction, Door] = {}
@@ -172,8 +176,17 @@ class Room:
         
         if self.color == RoomColor.YELLOW:
             # 🟡 MAGASINS: Échange d'or contre des objets
-            print("💰 Vous entrez dans un magasin. Vous pouvez échanger de l'or contre des objets.")
-            # TODO: Implémenter la logique d'achat
+            if self.shop_item and not self.shop_purchased:
+                item_name = self.shop_item.get('name', 'objet mystère')
+                price = self.shop_item.get('price', 10)
+                print(f"💰 Vous entrez dans un magasin.")
+                print(f"🛒 Vous pouvez acheter: {item_name} pour {price} pièces d'or")
+                print(f"💵 Vous avez: {player.inventory.gold.quantity} pièces")
+                print(f"⌨️  Appuyez sur G pour acheter, ou continuez sans acheter")
+            elif self.shop_purchased:
+                print("💰 Ce magasin est vide. Vous avez déjà acheté l'objet.")
+            else:
+                print("💰 Vous entrez dans un magasin (pas d'objet disponible).")
             
         elif self.color == RoomColor.GREEN:
             # 🟢 JARDINS: Gemmes, trous à creuser, objets permanents
@@ -236,6 +249,50 @@ class Room:
 
     def __repr__(self):
         return f"Room({self.name}, cost={self.gem_cost}, rarity={self.rarity})"
+
+    def buy_shop_item(self, player: 'Player') -> bool:
+        """Permet au joueur d'acheter l'objet du magasin"""
+        if self.color != RoomColor.YELLOW:
+            print("❌ Cette pièce n'est pas un magasin!")
+            return False
+        
+        if not self.shop_item:
+            print("❌ Pas d'objet disponible dans ce magasin.")
+            return False
+        
+        if self.shop_purchased:
+            print("❌ Vous avez déjà acheté l'objet de ce magasin!")
+            return False
+        
+        price = self.shop_item.get('price', 10)
+        
+        if player.inventory.gold.quantity < price:
+            print(f"❌ Pas assez d'or! Vous avez {player.inventory.gold.quantity}, il faut {price} pièces.")
+            return False
+        
+        # Déduire l'or
+        player.inventory.gold.quantity -= price
+        
+        # Donner l'objet au joueur
+        item = self.shop_item.get('item')
+        item_name = self.shop_item.get('name', 'objet mystère')
+        
+        if item:
+            if hasattr(item, '__call__'):  # Si c'est une fonction qui crée l'objet
+                item = item()
+            
+            # Ajouter l'objet à l'inventaire
+            if hasattr(item, 'quantity'):
+                # Objet consommable
+                player.inventory.add_item(item)
+            else:
+                # Objet permanent
+                player.inventory.add_permanent_item(item)
+        
+        self.shop_purchased = True
+        print(f"✅ Vous avez acheté: {item_name} pour {price} pièces!")
+        print(f"💰 Or restant: {player.inventory.gold.quantity}")
+        return True
 
     def rotate(self, degrees: int) -> None:
         """Rotate the room's logical door directions clockwise by degrees (must be 0,90,180,270).

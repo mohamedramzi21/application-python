@@ -103,14 +103,14 @@ class RoomCatalog:
             objects=[]
         ))
 
-        # 7. Observatory (blue)
+        # 7. Observatory (blue) - Porte Ouest verrouillée
         self.available_rooms.append(Room(
             name="Observatory",
             color=RoomColor.BLUE,
             doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=1,
             rarity=2,
-            objects=[Gems(1), Gold(40)]
+            objects=[Gems(1), Gold(40)],
         ))
 
         # 8. Rumpus Room (blue)
@@ -164,7 +164,8 @@ class RoomCatalog:
             doors=[Direction.WEST, Direction.SOUTH],
             gem_cost=1,
             rarity=1,
-            objects=[Apple(), Banana()]
+            objects=[Apple(), Banana()],
+            shop_item={'item': Shovel, 'name': 'Pelle (Shovel)', 'price': 10}
         ))
 
         # ============ PIÈCES ROUGES ============
@@ -230,14 +231,14 @@ class RoomCatalog:
             objects=[Keys(1)]
         ))
 
-        # 19. Conference Room (blue)
+        # 19. Conference Room (blue) - Porte Est verrouillée
         self.available_rooms.append(Room(
             name="Conference Room",
             color=RoomColor.BLUE,
             doors=[Direction.WEST, Direction.EAST, Direction.SOUTH],
             gem_cost=1,
             rarity=2,
-            objects=[Keys(2), Dice(1)]
+            objects=[Keys(2), Dice(1)],
         ))
 
         # 20. Drawing Room (blue)
@@ -475,16 +476,14 @@ class RoomCatalog:
             objects=[]
         ))
 
-        # 44. Secret Passage (orange)
+        # 44. Secret Passage (orange) - Porte Nord verrouillée
         self.available_rooms.append(Room(
             name="Secret Passage",
             color=RoomColor.ORANGE,
-            doors=[Direction.NORTH, Direction.SOUTH],# il doit depenser une cle pour pouvoir choir la porte de north
+            doors=[Direction.NORTH, Direction.SOUTH],
             gem_cost=2,
             rarity=1,
             objects=[Keys(1)],
-            
-            
         ))
 
         # 45. West Wing Hall (orange)
@@ -622,14 +621,14 @@ class RoomCatalog:
             objects=[Cake(), Meal()]
         ))
 
-        # 58. Master Bedroom (purple)
+        # 58. Master Bedroom (purple) - Porte Sud verrouillée (chambre privée)
         self.available_rooms.append(Room(
             name="Master Bedroom",
             color=RoomColor.PURPLE,
             doors=[Direction.SOUTH],
             gem_cost=1,
             rarity=2,
-            objects=[Cake(), Meal()]
+            objects=[Cake(), Meal()],
         ))
 
         # 59. Nursery (purple)
@@ -661,7 +660,8 @@ class RoomCatalog:
             doors=[Direction.SOUTH, Direction.WEST],
             gem_cost=1,
             rarity=1,
-            objects=[Keys(2), Dice(1)]
+            objects=[Keys(2), Dice(1)],
+            shop_item={'item': LockpickKit, 'name': 'Kit de crochetage', 'price': 15}
         ))
 
         # 62. Kitchen (yellow/violet)
@@ -671,7 +671,8 @@ class RoomCatalog:
             doors=[Direction.SOUTH, Direction.WEST],
             gem_cost=0,
             rarity=1,
-            objects=[Apple(), Banana(), Cake()]
+            objects=[Apple(), Banana(), Cake()],
+            shop_item={'item': lambda: Gold(5), 'name': '5 pièces d\'or', 'price': 8}
         ))
 
         # 63. Laundry Room (yellow/violet)
@@ -681,10 +682,11 @@ class RoomCatalog:
             doors=[Direction.SOUTH],
             gem_cost=0,
             rarity=1,
-            objects=[Keys(1)]
+            objects=[Keys(1)],
+            shop_item={'item': lambda: Keys(3), 'name': '3 clés', 'price': 12}
         ))
 
-        # 64. Locksmith (yellow/violet)
+        # 64. Locksmith (yellow/violet) - Porte Sud verrouillée (ironique!)
         self.available_rooms.append(Room(
             name="Locksmith",
             color=RoomColor.YELLOW,
@@ -692,7 +694,7 @@ class RoomCatalog:
             gem_cost=1,
             rarity=2,
             objects=[Keys(3)],
-            
+            shop_item={'item': lambda: Keys(5), 'name': '5 clés', 'price': 20}
         ))
 
         # 65. Mount Holly Gift Shop (yellow/violet)
@@ -703,7 +705,7 @@ class RoomCatalog:
             gem_cost=1,
             rarity=2,
             objects=[Keys(2), Gems(1), Dice(1)],
-            
+            shop_item={'item': lambda: Gems(2), 'name': '2 gemmes', 'price': 18}
         ))
 
         # 66. Showroom (yellow/violet)
@@ -713,18 +715,19 @@ class RoomCatalog:
             doors=[Direction.SOUTH, Direction.NORTH],
             gem_cost=1,
             rarity=1,
-            objects=[Keys(1), Dice(1)]
+            objects=[Keys(1), Dice(1)],
+            shop_item={'item': lambda: Dice(3), 'name': '3 dés', 'price': 15}
         ))
 
-        # 67. The Armory (yellow/violet)
+        # 67. The Armory (yellow/violet) - Portes Nord et Sud verrouillées
         self.available_rooms.append(Room(
             name="The Armory",
             color=RoomColor.YELLOW,
-            doors=[Direction.SOUTH, Direction.EAST,Direction.WEST,Direction.NORTH],#north and south must use a shovel
+            doors=[Direction.SOUTH, Direction.EAST, Direction.WEST, Direction.NORTH],
             gem_cost=2,
             rarity=2,
             objects=[Keys(2), Gems(1)],
-            
+            shop_item={'item': lambda: Steps(20), 'name': '20 pas supplémentaires', 'price': 25}
         ))
 
         # ============ PIÈCES SPÉCIALES AVEC PELLE ET OR ============

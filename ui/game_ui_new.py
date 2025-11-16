@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from typing import Optional, Dict
 from game1.game import Game, GameState
-from core.game_objects import Direction
+from core.game_objects import Direction, RoomColor
 
 # Couleurs
 WHITE = (255, 255, 255)
@@ -309,6 +309,17 @@ class ImprovedGameUI:
             # I pour inventaire
             elif event.key == pygame.K_i:
                 print(self.game.player.inventory)
+            
+            # G pour acheter dans un magasin (chambre YELLOW)
+            elif event.key == pygame.K_g:
+                current_room = self.game.manor.get_room(*self.game.player.position)
+                if current_room and current_room.color == RoomColor.YELLOW:
+                    success = current_room.buy_shop_item(self.game.player)
+                    if success:
+                        # Message de succès déjà affiché par buy_shop_item
+                        pass
+                else:
+                    print("❌ Vous n'êtes pas dans un magasin!")
 
     def handle_room_selection_events(self, event):
         """En mode sélection: Flèches + ESPACE"""
@@ -534,6 +545,25 @@ class ImprovedGameUI:
         # Nom de la pièce
         name_surf = self.font_large.render(current_room.name, True, BLACK)
         self.screen.blit(name_surf, (x, y))
+
+        # Si c'est un magasin (YELLOW) avec un objet à vendre
+        if current_room.color == RoomColor.YELLOW and current_room.shop_item and not current_room.shop_purchased:
+            y += 50
+            item_name = current_room.shop_item.get('name', 'objet mystère')
+            price = current_room.shop_item.get('price', 10)
+            shop_text = f"🛒 {item_name} - {price} pièces"
+            shop_surf = self.font_small.render(shop_text, True, ORANGE)
+            self.screen.blit(shop_surf, (x, y))
+            
+            y += 30
+            hint_text = "Appuyez sur G pour acheter"
+            hint_surf = self.font_small.render(hint_text, True, GRAY)
+            self.screen.blit(hint_surf, (x, y))
+        elif current_room.color == RoomColor.YELLOW and current_room.shop_purchased:
+            y += 50
+            sold_text = "✓ Objet déjà acheté"
+            sold_surf = self.font_small.render(sold_text, True, GRAY)
+            self.screen.blit(sold_surf, (x, y))
 
         # Effet si présent
         if current_room.effect:

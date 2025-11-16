@@ -320,6 +320,9 @@ class Game:
         self.player.position = new_pos
         print(f"✓ Déplacement vers {dest_room.name} (pas restants: {self.player.inventory.steps.quantity})")
         
+        # Appeler la méthode enter() de la pièce pour appliquer les effets (magasin, etc.)
+        dest_room.enter(self.player)
+        
         # Vérifier si c'est l'Antechamber (victoire)
         if dest_room.name == "Antechamber":
             self.state = GameState.GAME_WON

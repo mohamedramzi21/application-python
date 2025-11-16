@@ -26,26 +26,27 @@ class Inventory:
         # Nourriture
         self.food_items = []
 
-        def spend_gold(self, amount: int) -> bool:
-            if self.gold >= amount:
-                self.gold -= amount
-                return True
-            print("Pas assez d’or !")
-            return False
+    def spend_gold(self, amount: int) -> bool:
+        """Dépense de l'or"""
+        if self.gold.quantity >= amount:
+            self.gold.quantity -= amount
+            return True
+        print("Pas assez d'or !")
+        return False
 
     def add_item(self, item):
         """Ajoute un objet consommable à l'inventaire"""
         if hasattr(item, 'quantity'):
             # C'est un objet consommable
-            if item.name == "Steps":
+            if item.name == "Steps" or item.name == "Pas":
                 self.steps.quantity += item.quantity
-            elif item.name == "Gold":
+            elif item.name == "Gold" or item.name == "Or":
                 self.gold.quantity += item.quantity
-            elif item.name == "Gems":
+            elif item.name == "Gems" or item.name == "Gemmes":
                 self.gems.quantity += item.quantity
-            elif item.name == "Keys":
+            elif item.name == "Keys" or item.name == "Clés":
                 self.keys.quantity += item.quantity
-            elif item.name == "Dice":
+            elif item.name == "Dice" or item.name == "Dés":
                 self.dice.quantity += item.quantity
             return True
         return False
